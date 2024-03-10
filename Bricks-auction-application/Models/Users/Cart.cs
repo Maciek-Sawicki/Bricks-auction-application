@@ -15,6 +15,6 @@ namespace Bricks_auction_application.Models.Users
         public virtual User User { get; set; }
 
         // Trzeba dodać więcej właściwości
-        public virtual ICollection<Item> Items { get; set; }
+        public virtual ICollection<Set> Items { get; set; }
     }
 }

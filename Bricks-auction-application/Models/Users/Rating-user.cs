@@ -20,7 +20,7 @@ namespace Bricks_auction_application.Models.Users
 
         [ForeignKey("Item")]
         public int ItemId { get; set; }
-        public virtual Item Item { get; set; }
+        public virtual Set Item { get; set; }
 
         public string Comment { get; set; }
         public DateTime DateRated { get; set; }
