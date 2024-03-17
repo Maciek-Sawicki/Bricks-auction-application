@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Bricks_auction_application.Models.Users
 {
@@ -24,11 +25,16 @@ namespace Bricks_auction_application.Models.Users
         [Required]
         public string Email { get; set; }
 
-        // Trzeba dodać więcej właściwości
+        // Relacja z ocenami wystawianymi przez użytkownika
+        public virtual ICollection<UserRating> RatingsGiven { get; set; }
 
-        // Relacje
-        //public virtual ICollection<Rating> RatingsGiven { get; set; }
-        //public virtual ICollection<Rating> RatingsReceived { get; set; }
-        //public virtual Cart Cart { get; set; }
+        // Relacja z ocenami otrzymanymi przez użytkownika
+        public virtual ICollection<UserRating> RatingsReceived { get; set; }
+
+        // Relacja z koszykiem użytkownika
+        public virtual Cart Cart { get; set; }
+
+        // Relacja z zamówieniami użytkownika
+        public virtual ICollection<OrdersHistory> OrdersHistory { get; set; }
     }
 }

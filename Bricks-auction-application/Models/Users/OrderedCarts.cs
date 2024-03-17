@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bricks_auction_application.Models.Users
 {
-    [Table("OrdersHistory")]
-    public class OrdersHistory
+    [Table("OrderedCarts")]
+    public class OrderedCart
     {
         [Key]
-        public int OrderId { get; set; }
+        public int OrderedCartId { get; set; }
 
         [Required]
         public int UserId { get; set; }
@@ -17,8 +17,8 @@ namespace Bricks_auction_application.Models.Users
         [Required]
         public DateTime OrderDate { get; set; }
 
-        // Lista zamówionych koszyków w historii zamówień
-        public virtual ICollection<OrderedCart> OrderedCarts { get; set; }
+        // Lista produktów w zamówionym koszyku
+        public virtual ICollection<OrderedCartItem> Items { get; set; }
 
         // Relacja z użytkownikiem
         [ForeignKey("UserId")]

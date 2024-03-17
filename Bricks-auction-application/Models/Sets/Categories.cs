@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Bricks_auction_application.Models.Sets
 {
-    [Table("Categories")]
-    public class Categories
+    [Table("Category")]
+    public class Category
     {
         [Key]
         public int Id { get; set; }

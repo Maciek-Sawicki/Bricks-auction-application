@@ -1,4 +1,4 @@
-﻿using Bricks_auction_application.Models.Auctions;
+﻿using Bricks_auction_application.Models.Offers;
 using Bricks_auction_application.Models.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;

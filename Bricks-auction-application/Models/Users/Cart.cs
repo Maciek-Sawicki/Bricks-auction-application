@@ -1,6 +1,7 @@
 ﻿using Bricks_auction_application.Models.Items;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Bricks_auction_application.Models.Users
 {
@@ -11,10 +12,10 @@ namespace Bricks_auction_application.Models.Users
         [ForeignKey("User")]
         public int UserId { get; set; }
 
-        // Relacja
+        // Relacja z użytkownikiem
         public virtual User User { get; set; }
 
-        // Trzeba dodać więcej właściwości
-        public virtual ICollection<Set> Items { get; set; }
+        // Lista pozycji w koszyku
+        public virtual ICollection<CartItem> Items { get; set; }
     }
 }
