@@ -4,6 +4,7 @@ using Bricks_auction_application.Models.Items;
 
 namespace Bricks_auction_application.Models.Users
 {
+    [Table("CartItems")]
     public class CartItem
     {
         [Key]

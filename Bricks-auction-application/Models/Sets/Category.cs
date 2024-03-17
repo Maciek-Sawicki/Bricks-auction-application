@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Bricks_auction_application.Models.Sets
 {
-    [Table("Category")]
+    [Table("Categories")]
     public class Category
     {
         [Key]

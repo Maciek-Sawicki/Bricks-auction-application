@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bricks_auction_application.Models.Users
 {
-    [Table("OrdersHistory")]
+    [Table("OrdersHistories")]
     public class OrdersHistory
     {
         [Key]
