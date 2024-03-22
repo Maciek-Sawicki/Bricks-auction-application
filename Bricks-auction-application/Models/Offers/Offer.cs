@@ -35,6 +35,7 @@ namespace Bricks_auction_application.Models.Offers
         public virtual Category Category { get; set; }
 
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; } // Cena oferty
 
         [Required]

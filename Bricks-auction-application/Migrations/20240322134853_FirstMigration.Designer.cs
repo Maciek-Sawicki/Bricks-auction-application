@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bricks_auction_application.Migrations
 {
     [DbContext(typeof(BricksAuctionDbContext))]
-    [Migration("20240321224635_migration2")]
-    partial class migration2
+    [Migration("20240322134853_FirstMigration")]
+    partial class FirstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,34 @@ namespace Bricks_auction_application.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Offers");
+                });
+
+            modelBuilder.Entity("Bricks_auction_application.Models.SellerReview", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewId"));
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReviewText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SellerUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("SellerUserId");
+
+                    b.ToTable("SellerReviews");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Sets.Category", b =>
@@ -279,6 +307,17 @@ namespace Bricks_auction_application.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Bricks_auction_application.Models.SellerReview", b =>
+                {
+                    b.HasOne("Bricks_auction_application.Models.Users.User", "Seller")
+                        .WithMany("SellerReviews")
+                        .HasForeignKey("SellerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
             modelBuilder.Entity("Bricks_auction_application.Models.Users.Cart", b =>
                 {
                     b.HasOne("Bricks_auction_application.Models.Users.User", "User")
@@ -375,6 +414,8 @@ namespace Bricks_auction_application.Migrations
                         .IsRequired();
 
                     b.Navigation("OrdersHistory");
+
+                    b.Navigation("SellerReviews");
                 });
 #pragma warning restore 612, 618
         }

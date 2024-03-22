@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bricks_auction_application.Migrations
 {
     /// <inheritdoc />
-    public partial class migration2 : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -126,6 +126,28 @@ namespace Bricks_auction_application.Migrations
                     table.ForeignKey(
                         name: "FK_OrdersHistories_Users_UserId",
                         column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SellerReviews",
+                columns: table => new
+                {
+                    ReviewId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SellerUserId = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    ReviewText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReviewDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SellerReviews", x => x.ReviewId);
+                    table.ForeignKey(
+                        name: "FK_SellerReviews_Users_SellerUserId",
+                        column: x => x.SellerUserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
@@ -260,6 +282,11 @@ namespace Bricks_auction_application.Migrations
                 name: "IX_OrdersHistories_UserId",
                 table: "OrdersHistories",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SellerReviews_SellerUserId",
+                table: "SellerReviews",
+                column: "SellerUserId");
         }
 
         /// <inheritdoc />
@@ -273,6 +300,9 @@ namespace Bricks_auction_application.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderedCartItems");
+
+            migrationBuilder.DropTable(
+                name: "SellerReviews");
 
             migrationBuilder.DropTable(
                 name: "Carts");
