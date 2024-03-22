@@ -4,6 +4,7 @@ using Bricks_auction_application.Models.Sets;
 
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Bricks_auction_application.Models.Offers
 {
@@ -18,6 +19,7 @@ namespace Bricks_auction_application.Models.Offers
 
         // Relacja z użytkownikiem
         [ForeignKey("UserId")]
+        [ValidateNever]
         public virtual User User { get; set; }
 
         [Required]
@@ -25,14 +27,15 @@ namespace Bricks_auction_application.Models.Offers
 
         // Relacja z zestawem LEGO
         [ForeignKey("LEGOSetId")]
+        [ValidateNever]
         public virtual Set LEGOSet { get; set; }
 
-        [Required]
-        public int CategoryId { get; set; } // Identyfikator kategorii zestawu LEGO
+        //[Required]
+        //public int CategoryId { get; set; } // Identyfikator kategorii zestawu LEGO
 
         // Relacja z kategorią zestawu LEGO
-        [ForeignKey("CategoryId")]
-        public virtual Category Category { get; set; }
+        //[ForeignKey("CategoryId")]
+        //public virtual Category Category { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]

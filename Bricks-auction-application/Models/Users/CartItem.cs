@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Bricks_auction_application.Models.Items;
+using Bricks_auction_application.Models.Offers;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Bricks_auction_application.Models.Users
 {
@@ -16,11 +17,13 @@ namespace Bricks_auction_application.Models.Users
         // Klucz obcy do koszyka
         [ForeignKey("Cart")]
         public int CartId { get; set; }
+        [ValidateNever]
         public virtual Cart Cart { get; set; }
 
         // Klucz obcy do zestawu LEGO
-        [ForeignKey("Set")]
-        public int SetId { get; set; }
-        public virtual Set Set { get; set; }
+        [ForeignKey("Offer")]
+        public int OfferId { get; set; }
+        [ValidateNever]
+        public virtual Offer Offer{ get; set; }
     }
 }

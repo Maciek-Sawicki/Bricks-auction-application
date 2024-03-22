@@ -2,6 +2,8 @@
 using Bricks_auction_application.Models.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Bricks_auction_application.Models.Sets;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Bricks_auction_application.Models.Items
 {
@@ -22,7 +24,10 @@ namespace Bricks_auction_application.Models.Items
         [Required]
         public int ReleaseYear { get; set; }
 
-        [ForeignKey("CategoryId")]
+        
         public int CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        [ValidateNever]
+        public Category Category { get; set; }
     }
 }

@@ -50,6 +50,8 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Sets");
                 });
 
@@ -60,9 +62,6 @@ namespace Bricks_auction_application.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OfferId"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<int>("LEGOSetId")
                         .HasColumnType("int");
@@ -80,8 +79,6 @@ namespace Bricks_auction_application.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("OfferId");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("LEGOSetId");
 
@@ -156,17 +153,17 @@ namespace Bricks_auction_application.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int>("OfferId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SetId")
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartItemId");
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("SetId");
+                    b.HasIndex("OfferId");
 
                     b.ToTable("CartItems");
                 });
@@ -205,20 +202,23 @@ namespace Bricks_auction_application.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderedCartItemId"));
 
+                    b.Property<int>("OfferId")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrderedCartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderedOfferID")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("SetId")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderedCartItemId");
 
-                    b.HasIndex("OrderedCartId");
+                    b.HasIndex("OfferId");
 
-                    b.HasIndex("SetId");
+                    b.HasIndex("OrderedCartId");
 
                     b.ToTable("OrderedCartItems");
                 });
@@ -277,7 +277,7 @@ namespace Bricks_auction_application.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Bricks_auction_application.Models.Offers.Offer", b =>
+            modelBuilder.Entity("Bricks_auction_application.Models.Items.Set", b =>
                 {
                     b.HasOne("Bricks_auction_application.Models.Sets.Category", "Category")
                         .WithMany()
@@ -285,6 +285,11 @@ namespace Bricks_auction_application.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Bricks_auction_application.Models.Offers.Offer", b =>
+                {
                     b.HasOne("Bricks_auction_application.Models.Items.Set", "LEGOSet")
                         .WithMany()
                         .HasForeignKey("LEGOSetId")
@@ -296,8 +301,6 @@ namespace Bricks_auction_application.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("LEGOSet");
 
@@ -334,15 +337,15 @@ namespace Bricks_auction_application.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bricks_auction_application.Models.Items.Set", "Set")
+                    b.HasOne("Bricks_auction_application.Models.Offers.Offer", "Offer")
                         .WithMany()
-                        .HasForeignKey("SetId")
+                        .HasForeignKey("OfferId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
 
-                    b.Navigation("Set");
+                    b.Navigation("Offer");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCart", b =>
@@ -362,21 +365,21 @@ namespace Bricks_auction_application.Migrations
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCartItem", b =>
                 {
+                    b.HasOne("Bricks_auction_application.Models.Offers.Offer", "Offer")
+                        .WithMany()
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Bricks_auction_application.Models.Users.OrderedCart", "OrderedCart")
                         .WithMany("Items")
                         .HasForeignKey("OrderedCartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bricks_auction_application.Models.Items.Set", "Set")
-                        .WithMany()
-                        .HasForeignKey("SetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Offer");
 
                     b.Navigation("OrderedCart");
-
-                    b.Navigation("Set");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrdersHistory", b =>
