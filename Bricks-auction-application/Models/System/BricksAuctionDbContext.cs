@@ -33,6 +33,12 @@ namespace Bricks_auction_application.Models
                 .HasForeignKey(c => c.OfferId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<OrderedCartItem>()
+                .HasOne(oc => oc.OrderedCart)
+                .WithMany(oc => oc.Items)
+                .HasForeignKey(oc => oc.OrderedCartId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Dodaj inne konfiguracje relacji
 
             base.OnModelCreating(modelBuilder);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,17 +12,21 @@ namespace Bricks_auction_application.Models.Users
         [Key]
         public int OrderedCartId { get; set; }
 
-        //[Required]
-        //public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public int OrdersHistoryId { get; set; }
+
+        [ValidateNever]
+        public virtual OrdersHistory OrdersHistory { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }
 
+        [ValidateNever]
         // Lista produktów w zamówionym koszyku
         public virtual ICollection<OrderedCartItem> Items { get; set; }
 
-        // Relacja z użytkownikiem
-        //[ForeignKey("UserId")]
-        //public virtual User User { get; set; }
     }
 }
+
+
+

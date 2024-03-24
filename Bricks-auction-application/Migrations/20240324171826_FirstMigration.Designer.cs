@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bricks_auction_application.Migrations
 {
     [DbContext(typeof(BricksAuctionDbContext))]
-    [Migration("20240324144003_FirstMigration")]
+    [Migration("20240324171826_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -185,12 +185,12 @@ namespace Bricks_auction_application.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("OrdersHistoryOrderId")
+                    b.Property<int>("OrdersHistoryId")
                         .HasColumnType("int");
 
                     b.HasKey("OrderedCartId");
 
-                    b.HasIndex("OrdersHistoryOrderId");
+                    b.HasIndex("OrdersHistoryId");
 
                     b.ToTable("OrderedCarts");
                 });
@@ -203,36 +203,33 @@ namespace Bricks_auction_application.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderedCartItemId"));
 
-                    b.Property<int>("OfferId")
-                        .HasColumnType("int");
-
                     b.Property<int>("OrderedCartId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderedOfferID")
+                    b.Property<int>("OrderedOfferId")
                         .HasColumnType("int");
 
                     b.HasKey("OrderedCartItemId");
 
-                    b.HasIndex("OfferId");
-
                     b.HasIndex("OrderedCartId");
+
+                    b.HasIndex("OrderedOfferId");
 
                     b.ToTable("OrderedCartItems");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrdersHistory", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("OrderHistoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderHistoryId"));
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId");
+                    b.HasKey("OrderHistoryId");
 
                     b.HasIndex("UserId");
 
@@ -345,22 +342,26 @@ namespace Bricks_auction_application.Migrations
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCart", b =>
                 {
-                    b.HasOne("Bricks_auction_application.Models.Users.OrdersHistory", null)
+                    b.HasOne("Bricks_auction_application.Models.Users.OrdersHistory", "OrdersHistory")
                         .WithMany("OrderedCarts")
-                        .HasForeignKey("OrdersHistoryOrderId");
+                        .HasForeignKey("OrdersHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrdersHistory");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCartItem", b =>
                 {
-                    b.HasOne("Bricks_auction_application.Models.Offers.Offer", "Offer")
-                        .WithMany()
-                        .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Bricks_auction_application.Models.Users.OrderedCart", "OrderedCart")
                         .WithMany("Items")
                         .HasForeignKey("OrderedCartId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Bricks_auction_application.Models.Offers.Offer", "Offer")
+                        .WithMany()
+                        .HasForeignKey("OrderedOfferId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -87,13 +87,13 @@ namespace Bricks_auction_application.Migrations
                 name: "OrdersHistories",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    OrderHistoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrdersHistories", x => x.OrderId);
+                    table.PrimaryKey("PK_OrdersHistories", x => x.OrderHistoryId);
                     table.ForeignKey(
                         name: "FK_OrdersHistories_Users_UserId",
                         column: x => x.UserId,
@@ -158,17 +158,18 @@ namespace Bricks_auction_application.Migrations
                 {
                     OrderedCartId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrdersHistoryOrderId = table.Column<int>(type: "int", nullable: true)
+                    OrdersHistoryId = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderedCarts", x => x.OrderedCartId);
                     table.ForeignKey(
-                        name: "FK_OrderedCarts_OrdersHistories_OrdersHistoryOrderId",
-                        column: x => x.OrdersHistoryOrderId,
+                        name: "FK_OrderedCarts_OrdersHistories_OrdersHistoryId",
+                        column: x => x.OrdersHistoryId,
                         principalTable: "OrdersHistories",
-                        principalColumn: "OrderId");
+                        principalColumn: "OrderHistoryId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,15 +205,14 @@ namespace Bricks_auction_application.Migrations
                     OrderedCartItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderedCartId = table.Column<int>(type: "int", nullable: false),
-                    OrderedOfferID = table.Column<int>(type: "int", nullable: false),
-                    OfferId = table.Column<int>(type: "int", nullable: false)
+                    OrderedOfferId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderedCartItems", x => x.OrderedCartItemId);
                     table.ForeignKey(
-                        name: "FK_OrderedCartItems_Offers_OfferId",
-                        column: x => x.OfferId,
+                        name: "FK_OrderedCartItems_Offers_OrderedOfferId",
+                        column: x => x.OrderedOfferId,
                         principalTable: "Offers",
                         principalColumn: "OfferId",
                         onDelete: ReferentialAction.Cascade);
@@ -221,7 +221,7 @@ namespace Bricks_auction_application.Migrations
                         column: x => x.OrderedCartId,
                         principalTable: "OrderedCarts",
                         principalColumn: "OrderedCartId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -251,19 +251,19 @@ namespace Bricks_auction_application.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderedCartItems_OfferId",
-                table: "OrderedCartItems",
-                column: "OfferId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderedCartItems_OrderedCartId",
                 table: "OrderedCartItems",
                 column: "OrderedCartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderedCarts_OrdersHistoryOrderId",
+                name: "IX_OrderedCartItems_OrderedOfferId",
+                table: "OrderedCartItems",
+                column: "OrderedOfferId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderedCarts_OrdersHistoryId",
                 table: "OrderedCarts",
-                column: "OrdersHistoryOrderId");
+                column: "OrdersHistoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdersHistories_UserId",
