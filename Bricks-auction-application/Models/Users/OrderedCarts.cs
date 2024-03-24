@@ -11,8 +11,8 @@ namespace Bricks_auction_application.Models.Users
         [Key]
         public int OrderedCartId { get; set; }
 
-        [Required]
-        public int UserId { get; set; }
+        //[Required]
+        //public int UserId { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }
@@ -21,7 +21,7 @@ namespace Bricks_auction_application.Models.Users
         public virtual ICollection<OrderedCartItem> Items { get; set; }
 
         // Relacja z użytkownikiem
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        //[ForeignKey("UserId")]
+        //public virtual User User { get; set; }
     }
 }

@@ -32,11 +32,11 @@ namespace Bricks_auction_application.Models.Users
         public virtual Cart Cart { get; set; }
 
         // Relacja z zamówieniami użytkownika
-        [ValidateNever]
+        //[ValidateNever]
         public virtual ICollection<OrdersHistory> OrdersHistory { get; set; }
 
         // Kolekcja opinii o użytkowniku (sprzedającym)
-        [ValidateNever]
+        //[ValidateNever]
         public ICollection<SellerReview> SellerReviews { get; set; }
     }
 }

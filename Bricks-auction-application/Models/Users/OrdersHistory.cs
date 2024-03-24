@@ -14,9 +14,6 @@ namespace Bricks_auction_application.Models.Users
         [Required]
         public int UserId { get; set; }
 
-        [Required]
-        public DateTime OrderDate { get; set; }
-
         // Lista zamówionych koszyków w historii zamówień
         public virtual ICollection<OrderedCart> OrderedCarts { get; set; }
 

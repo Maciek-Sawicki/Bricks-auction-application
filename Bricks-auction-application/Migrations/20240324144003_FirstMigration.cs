@@ -68,11 +68,13 @@ namespace Bricks_auction_application.Migrations
                 name: "Carts",
                 columns: table => new
                 {
+                    CartId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.UserId);
+                    table.PrimaryKey("PK_Carts", x => x.CartId);
                     table.ForeignKey(
                         name: "FK_Carts_Users_UserId",
                         column: x => x.UserId,
@@ -87,8 +89,7 @@ namespace Bricks_auction_application.Migrations
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,7 +133,6 @@ namespace Bricks_auction_application.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     LEGOSetId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
                     OfferEndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -158,7 +158,6 @@ namespace Bricks_auction_application.Migrations
                 {
                     OrderedCartId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OrdersHistoryOrderId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -170,12 +169,6 @@ namespace Bricks_auction_application.Migrations
                         column: x => x.OrdersHistoryOrderId,
                         principalTable: "OrdersHistories",
                         principalColumn: "OrderId");
-                    table.ForeignKey(
-                        name: "FK_OrderedCarts_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,7 +177,6 @@ namespace Bricks_auction_application.Migrations
                 {
                     CartItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
                     CartId = table.Column<int>(type: "int", nullable: false),
                     OfferId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -195,14 +187,14 @@ namespace Bricks_auction_application.Migrations
                         name: "FK_CartItems_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "UserId",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CartItems_Offers_OfferId",
                         column: x => x.OfferId,
                         principalTable: "Offers",
                         principalColumn: "OfferId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,8 +205,7 @@ namespace Bricks_auction_application.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderedCartId = table.Column<int>(type: "int", nullable: false),
                     OrderedOfferID = table.Column<int>(type: "int", nullable: false),
-                    OfferId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    OfferId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,6 +235,12 @@ namespace Bricks_auction_application.Migrations
                 column: "OfferId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Carts_UserId",
+                table: "Carts",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offers_LEGOSetId",
                 table: "Offers",
                 column: "LEGOSetId");
@@ -267,11 +264,6 @@ namespace Bricks_auction_application.Migrations
                 name: "IX_OrderedCarts_OrdersHistoryOrderId",
                 table: "OrderedCarts",
                 column: "OrdersHistoryOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderedCarts_UserId",
-                table: "OrderedCarts",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdersHistories_UserId",

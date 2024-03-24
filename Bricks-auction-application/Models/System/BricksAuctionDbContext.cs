@@ -24,6 +24,20 @@ namespace Bricks_auction_application.Models
         public DbSet<OrderedCart> OrderedCarts { get; set; }
         public DbSet<OrdersHistory> OrdersHistories { get; set; }
         public DbSet<SellerReview> SellerReviews { get; set; }
-        
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CartItem>()
+                .HasOne(c => c.Offer)
+                .WithMany()
+                .HasForeignKey(c => c.OfferId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Dodaj inne konfiguracje relacji
+
+            base.OnModelCreating(modelBuilder);
+        }
+
+
     }
 }

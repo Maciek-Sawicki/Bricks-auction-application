@@ -23,7 +23,7 @@ namespace Bricks_auction_application.Models.Users
         [ForeignKey("OfferId")]
         public virtual Offer Offer { get; set; } // Zestaw LEGO
 
-        [Required]
-        public int Quantity { get; set; } // Ilość zamówionych zestawów LEGO
+        //[Required]
+        //public int Quantity { get; set; } // Ilość zamówionych zestawów LEGO
     }
 }

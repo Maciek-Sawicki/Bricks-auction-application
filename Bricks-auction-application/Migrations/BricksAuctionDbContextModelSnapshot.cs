@@ -72,9 +72,6 @@ namespace Bricks_auction_application.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -134,10 +131,19 @@ namespace Bricks_auction_application.Migrations
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.Cart", b =>
                 {
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId");
+                    b.HasKey("CartId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -154,9 +160,6 @@ namespace Bricks_auction_application.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("OfferId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartItemId");
@@ -182,14 +185,9 @@ namespace Bricks_auction_application.Migrations
                     b.Property<int?>("OrdersHistoryOrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderedCartId");
 
                     b.HasIndex("OrdersHistoryOrderId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("OrderedCarts");
                 });
@@ -211,9 +209,6 @@ namespace Bricks_auction_application.Migrations
                     b.Property<int>("OrderedOfferID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderedCartItemId");
 
                     b.HasIndex("OfferId");
@@ -230,9 +225,6 @@ namespace Bricks_auction_application.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -340,7 +332,7 @@ namespace Bricks_auction_application.Migrations
                     b.HasOne("Bricks_auction_application.Models.Offers.Offer", "Offer")
                         .WithMany()
                         .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cart");
@@ -353,14 +345,6 @@ namespace Bricks_auction_application.Migrations
                     b.HasOne("Bricks_auction_application.Models.Users.OrdersHistory", null)
                         .WithMany("OrderedCarts")
                         .HasForeignKey("OrdersHistoryOrderId");
-
-                    b.HasOne("Bricks_auction_application.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCartItem", b =>

@@ -11,8 +11,8 @@ namespace Bricks_auction_application.Models.Users
         [Key]
         public int CartItemId { get; set; }
 
-        [Required]
-        public int Quantity { get; set; }
+        //[Required]
+        //public int Quantity { get; set; }
 
         // Klucz obcy do koszyka
         [ForeignKey("Cart")]
@@ -20,10 +20,10 @@ namespace Bricks_auction_application.Models.Users
         [ValidateNever]
         public virtual Cart Cart { get; set; }
 
-        // Klucz obcy do zestawu LEGO
+        // Klucz obcy do oferty
         [ForeignKey("Offer")]
         public int OfferId { get; set; }
         [ValidateNever]
-        public virtual Offer Offer{ get; set; }
+        public virtual Offer Offer { get; set; }
     }
 }

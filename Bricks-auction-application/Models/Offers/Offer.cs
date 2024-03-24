@@ -20,7 +20,7 @@ namespace Bricks_auction_application.Models.Offers
         // Relacja z użytkownikiem
         [ForeignKey("UserId")]
         [ValidateNever]
-        public virtual User User { get; set; }
+        public User User { get; set; }
 
         [Required]
         public int LEGOSetId { get; set; } // Numer zestawu LEGO, który jest przedmiotem oferty
@@ -28,7 +28,7 @@ namespace Bricks_auction_application.Models.Offers
         // Relacja z zestawem LEGO
         [ForeignKey("LEGOSetId")]
         [ValidateNever]
-        public virtual Set LEGOSet { get; set; }
+        public Set LEGOSet { get; set; }
 
         //[Required]
         //public int CategoryId { get; set; } // Identyfikator kategorii zestawu LEGO
@@ -41,8 +41,8 @@ namespace Bricks_auction_application.Models.Offers
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; } // Cena oferty
 
-        [Required]
-        public int Quantity { get; set; }
+        //[Required]
+        //public int Quantity { get; set; }
 
         [Required]
         public DateTime OfferEndDateTime { get; set; } // Data i godzina zakończenia oferty
