@@ -1,53 +1,65 @@
 ﻿@model IEnumerable<Bricks_auction_application.Models.Offers.Offer>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Offers";
 }
 
 <h1>Offers</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @Html.ActionLink("Create New", "Create")
 </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.First().User.Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LEGOSet)
+                @Html.DisplayNameFor(model => model.First().LEGOSet.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.First().Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OfferEndDateTime)
+                @Html.DisplayNameFor(model => model.First().OfferEndDateTime)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LEGOSet.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OfferEndDateTime)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.OfferId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OfferId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OfferId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LEGOSet.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OfferEndDateTime)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.OfferId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.OfferId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.OfferId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div>
+    Sort by:
+    <a asp-action="Index" asp-route-sortOrder="name_desc">Nazwa</a> |
+    <a asp-action="Index" asp-route-sortOrder="Price">Price</a> |
+    <a asp-action="Index" asp-route-sortOrder="OfferEndDateTime">End Date</a>
+    <a> ~~~~~~~~</a>
+
+
+</div>

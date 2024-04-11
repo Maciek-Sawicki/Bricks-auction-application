@@ -20,12 +20,61 @@ namespace Bricks_auction_application.Controllers
         }
 
         // GET: Offers
-        public async Task<IActionResult> Index()
+        /* public async Task<IActionResult> Index()
+         {
+             var bricksAuctionDbContext = _context.Offers.Include(o => o.LEGOSet).Include(o => o.User);
+             return View(await bricksAuctionDbContext.ToListAsync());
+         }*/
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var bricksAuctionDbContext = _context.Offers.Include(o => o.LEGOSet).Include(o => o.User);
-            return View(await bricksAuctionDbContext.ToListAsync());
-        }
+            ViewData["UserSort"] = String.IsNullOrEmpty(sortOrder) ? "user_desc" : "";
+            ViewData["LEGOSetSort"] = sortOrder == "LEGOSet" ? "legoSet_desc" : "LEGOSet";
+            ViewData["PriceSort"] = sortOrder == "Price" ? "price_desc" : "Price";
 
+            var offers = from o in _context.Offers.Include(o => o.User).Include(o => o.LEGOSet)
+                         select o;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    offers = offers.OrderByDescending(o => o.LEGOSet.Name);
+                    break;
+                case "Price":
+                    offers = offers.OrderBy(o => o.Price);
+                    break;
+                case "price_desc":
+                    offers = offers.OrderByDescending(o => o.Price);
+                    break;
+                default:
+                    offers = offers.OrderBy(o => o.LEGOSet.Name);
+                    break;
+            }
+
+            return View(await offers.ToListAsync());
+        }
+        /*public async Task<IActionResult> Index(string sortOrder)
+        {
+            ViewBag.PriceSortParm = String.IsNullOrEmpty(sortOrder) ? "price_desc" : "";
+            ViewBag.EndDateSortParm = sortOrder == "OfferEndDateTime" ? "endDate_desc" : "OfferEndDateTime";
+
+            var offers = from o in _context.Offers
+                         select o;
+
+            switch (sortOrder)
+            {
+                case "price_desc":
+                    offers = offers.OrderByDescending(o => o.Price);
+                    break;
+                case "endDate_desc":
+                    offers = offers.OrderByDescending(o => o.OfferEndDateTime);
+                    break;
+                default:
+                    offers = offers.OrderBy(o => o.Price);
+                    break;
+            }
+
+            return View(await offers.ToListAsync());
+        }*/
         // GET: Offers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
