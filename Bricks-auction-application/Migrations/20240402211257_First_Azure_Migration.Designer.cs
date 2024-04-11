@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bricks_auction_application.Migrations
 {
     [DbContext(typeof(BricksAuctionDbContext))]
-    [Migration("20240324171826_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20240402211257_First_Azure_Migration")]
+    partial class First_Azure_Migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
