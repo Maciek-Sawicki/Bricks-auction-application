@@ -45,6 +45,8 @@ namespace Bricks_auction_application.Models.Offers
         //public int Quantity { get; set; }
 
         [Required]
+        public int CategoryId { get; set; }
+        [Required]
         public DateTime OfferEndDateTime { get; set; } // Data i godzina zakończenia oferty
     }
 }
