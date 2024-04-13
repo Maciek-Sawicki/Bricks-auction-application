@@ -25,25 +25,28 @@ namespace Bricks_auction_application.Controllers
              var bricksAuctionDbContext = _context.Offers.Include(o => o.LEGOSet).Include(o => o.User);
              return View(await bricksAuctionDbContext.ToListAsync());
          }*/
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string sortDirection)
         {
-            ViewData["UserSort"] = String.IsNullOrEmpty(sortOrder) ? "user_desc" : "";
-            ViewData["LEGOSetSort"] = sortOrder == "LEGOSet" ? "legoSet_desc" : "LEGOSet";
+            ViewData["NameSort"] = sortOrder == "Name" ? "name_desc" : "";
             ViewData["PriceSort"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["OfferEndDateTimeSort"] = sortOrder == "OfferEndDateTime" ? "offerEndDateTime_desc" : "OfferEndDateTime";
+
+            ViewData["CurrentSortOrder"] = sortOrder;
+            ViewData["CurrentSortDirection"] = sortDirection;
 
             var offers = from o in _context.Offers.Include(o => o.User).Include(o => o.LEGOSet)
                          select o;
 
-            switch (sortOrder)
+            switch(sortOrder)
             {
-                case "name_desc":
-                    offers = offers.OrderByDescending(o => o.LEGOSet.Name);
+                case "Name":
+                    offers = sortDirection == "ascending" ? offers.OrderBy(o => o.LEGOSet.Name) : offers.OrderByDescending(o => o.LEGOSet.Name);
                     break;
                 case "Price":
-                    offers = offers.OrderBy(o => o.Price);
+                    offers = sortDirection == "ascending" ? offers.OrderBy(o => o.Price) : offers.OrderByDescending(o => o.Price);
                     break;
-                case "price_desc":
-                    offers = offers.OrderByDescending(o => o.Price);
+                case "OfferEndDateTime":
+                    offers = sortDirection == "ascending" ? offers.OrderBy(o => o.OfferEndDateTime) : offers.OrderByDescending(o => o.OfferEndDateTime);
                     break;
                 default:
                     offers = offers.OrderBy(o => o.LEGOSet.Name);
@@ -52,6 +55,8 @@ namespace Bricks_auction_application.Controllers
 
             return View(await offers.ToListAsync());
         }
+
+
         /*public async Task<IActionResult> Index(string sortOrder)
         {
             ViewBag.PriceSortParm = String.IsNullOrEmpty(sortOrder) ? "price_desc" : "";
