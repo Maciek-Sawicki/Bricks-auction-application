@@ -60,6 +60,7 @@ namespace Bricks_auction_application.Controllers
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Category created successfully";
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -111,6 +112,7 @@ namespace Bricks_auction_application.Controllers
                         throw;
                     }
                 }
+                TempData["success"] = "Category updated successfully";
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -146,6 +148,7 @@ namespace Bricks_auction_application.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["success"] = "Category deleted successfully";
             return RedirectToAction(nameof(Index));
         }
 

@@ -135,13 +135,14 @@ namespace Bricks_auction_application.Controllers
                 {
                     return NotFound("Nie można znaleźć zestawu LEGO dla podanego identyfikatora.");
                 }
-
+                
                 // Przypisz kategorię zestawu LEGO jako kategorię oferty
                 offer.CategoryId = legoSet.CategoryId;
 
                 // Dodaj ofertę do kontekstu bazy danych i zapisz zmiany
                 _context.Add(offer);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Offer created successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LEGOSetId"] = new SelectList(_context.Sets, "Id", "Name", offer.LEGOSetId);
@@ -221,11 +222,12 @@ namespace Bricks_auction_application.Controllers
             offer.CategoryId = legoSet.CategoryId;
 
             if (ModelState.IsValid)
-            {
+            {   
                 try
                 {
                     _context.Update(offer);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Offer updated successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -234,11 +236,14 @@ namespace Bricks_auction_application.Controllers
                         return NotFound();
                     }
                     else
-                    {
+                    { 
                         throw;
+
                     }
+
                 }
                 return RedirectToAction(nameof(Index));
+
             }
             ViewData["LEGOSetId"] = new SelectList(_context.Sets, "Id", "Name", offer.LEGOSetId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", offer.UserId);
@@ -273,6 +278,7 @@ namespace Bricks_auction_application.Controllers
             if (offer != null)
             {
                 _context.Offers.Remove(offer);
+                TempData["success"] = "Offer deleted successfully";
             }
 
             await _context.SaveChangesAsync();

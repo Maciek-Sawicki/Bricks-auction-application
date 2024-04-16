@@ -63,6 +63,7 @@ namespace Bricks_auction_application.Controllers
             {
                 _context.Add(@set);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Set created successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "CategoryName", @set.CategoryId);
@@ -104,6 +105,7 @@ namespace Bricks_auction_application.Controllers
                 {
                     _context.Update(@set);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Set updated successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -150,6 +152,7 @@ namespace Bricks_auction_application.Controllers
             if (@set != null)
             {
                 _context.Sets.Remove(@set);
+                TempData["success"] = "Set deleted successfully";
             }
 
             await _context.SaveChangesAsync();

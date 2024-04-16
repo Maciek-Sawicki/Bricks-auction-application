@@ -60,6 +60,7 @@ namespace Bricks_auction_application.Controllers
             {
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "User created successfully";
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
@@ -99,6 +100,7 @@ namespace Bricks_auction_application.Controllers
                 {
                     _context.Update(user);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "User updated successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,6 +145,7 @@ namespace Bricks_auction_application.Controllers
             if (user != null)
             {
                 _context.Users.Remove(user);
+                TempData["success"] = "User deleted successfully";
             }
 
             await _context.SaveChangesAsync();
