@@ -1,8 +1,36 @@
-﻿@{
+﻿@model IEnumerable<Bricks_auction_application.Models.Offers.Offer>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>Welcome to Bricks Auction Platform</h2>
+
+<form asp-controller="Home" asp-action="Index" method="get">
+    <p>
+        Search Set by Name or Set ID:
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+<div class="row">
+    @foreach (var offer in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@offer.LEGOSet.Name</h5>
+                    <p class="card-text">@offer.User.Username</p>
+                    <p class="card-text">Price: @offer.Price.ToString("C")</p>
+                    <p class="card-text">Offer End Date: @offer.OfferEndDateTime.ToString("dd/MM/yyyy")</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <a href="@Url.Action("Details", "Offers", new { id = offer.OfferId })" class="btn btn-sm btn-outline-secondary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
