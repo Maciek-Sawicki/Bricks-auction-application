@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,21 @@ builder.Services.AddDbContext<BricksAuctionDbContext>(x => x.UseSqlServer(connec
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+var supportedCultures = new[]
+            {
+                    new CultureInfo("en-US")
+            };
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+app.UseRequestLocalization(localizationOptions);
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -34,3 +54,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
