@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bricks_auction_application.Models
+namespace Bricks_auction_application.DataAccess
 {
     public class BricksAuctionDbContext : DbContext
     {
@@ -40,12 +40,6 @@ namespace Bricks_auction_application.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Dodaj inne konfiguracje relacji
-            modelBuilder.Entity<Offer>()
-               .HasOne(oc => oc.User)
-               .WithMany()
-               .HasForeignKey(oc => oc.UserId)
-               .OnDelete(DeleteBehavior.Restrict);
-
 
             base.OnModelCreating(modelBuilder);
         }

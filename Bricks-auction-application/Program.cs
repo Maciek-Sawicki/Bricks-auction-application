@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
+using Bricks_auction_application.Models.System.Repository.IRepository;
+using Bricks_auction_application.Models.System.Respository;
+using Bricks_auction_application.Models.System.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,8 @@ builder.Services.AddDbContext<BricksAuctionDbContext>(x => x.UseSqlServer(connec
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

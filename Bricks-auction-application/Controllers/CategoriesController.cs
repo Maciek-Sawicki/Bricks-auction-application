@@ -1,40 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Sets;
+using Bricks_auction_application.Models.System.Repository.IRepository;
+using Bricks_auction_application.Models.System.Respository;
 
 namespace Bricks_auction_application.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly BricksAuctionDbContext _context;
+        private readonly IUnitOfWork _unitofwork;
 
-        public CategoriesController(BricksAuctionDbContext context)
+        public CategoriesController(IUnitOfWork unitofwork)
         {
-            _context = context;
+            _unitofwork = unitofwork;
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var objCategoryList = _unitofwork.Category.GetAll();
+            return View(objCategoryList);
         }
 
         // GET: Categories/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = _unitofwork.Category.Get(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -50,16 +47,14 @@ namespace Bricks_auction_application.Controllers
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CategoryName")] Category category)
+        public IActionResult Create([Bind("Id,CategoryName")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                _unitofwork.Category.Add(category);
+                _unitofwork.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -67,14 +62,14 @@ namespace Bricks_auction_application.Controllers
         }
 
         // GET: Categories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = _unitofwork.Category.Get(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -83,11 +78,9 @@ namespace Bricks_auction_application.Controllers
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CategoryName")] Category category)
+        public IActionResult Edit(int id, [Bind("Id,CategoryName")] Category category)
         {
             if (id != category.Id)
             {
@@ -98,12 +91,12 @@ namespace Bricks_auction_application.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    _unitofwork.Category.Update(category);
+                    _unitofwork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!_unitofwork.Category.Exists(id))
                     {
                         return NotFound();
                     }
@@ -119,15 +112,14 @@ namespace Bricks_auction_application.Controllers
         }
 
         // GET: Categories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = _unitofwork.Category.Get(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -139,22 +131,16 @@ namespace Bricks_auction_application.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = _unitofwork.Category.Get(id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
+                _unitofwork.Category.Delete(category);
+                _unitofwork.Save();
+                TempData["success"] = "Category deleted successfully";
             }
-
-            await _context.SaveChangesAsync();
-            TempData["success"] = "Category deleted successfully";
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }
