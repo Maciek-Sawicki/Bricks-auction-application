@@ -1,4 +1,4 @@
-﻿@model Bricks_auction_application.Models.Offers.Offer
+﻿@model Bricks_auction_application.Models.ViewModels.OfferVM
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,37 +12,29 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="OfferId" />
+            <input type="hidden" asp-for="Offer.OfferId" />
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
+                <label asp-for="Offer.UserId" class="control-label"></label>
+                <select asp-for="Offer.UserId" class="form-control" asp-items="ViewBag.UserId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="LEGOSetId" class="control-label"></label>
-                <select asp-for="LEGOSetId" class="form-control" asp-items="ViewBag.LEGOSetId"></select>
-                <span asp-validation-for="LEGOSetId" class="text-danger"></span>
+                <label asp-for="Offer.LEGOSetId" class="control-label"></label>
+                <select asp-for="Offer.LEGOSetId" class="form-control" asp-items="ViewBag.LEGOSetId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="Offer.Price" class="control-label"></label>
+                <input asp-for="Offer.Price" class="form-control" />
+                <span asp-validation-for="Offer.Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OfferEndDateTime" class="control-label"></label>
-                <input asp-for="OfferEndDateTime" class="form-control" />
-                <span asp-validation-for="OfferEndDateTime" class="text-danger"></span>
+                <label asp-for="Offer.OfferEndDateTime" class="control-label"></label>
+                <input asp-for="Offer.OfferEndDateTime" class="form-control" />
+                <span asp-validation-for="Offer.OfferEndDateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagePath">Image</label>
-                <input asp-for="ImagePath" type="file" name="file" class="form-control">
+                <label asp-for="ImageFile">Image</label>
+                <input asp-for="ImageFile" type="file" class="form-control" />
             </div>
-            @if (Model != null)
-            {
-                <div class="form-group">
-                    <img src="@Model.ImagePath" width="100" />
-                </div>
-            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -55,5 +47,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

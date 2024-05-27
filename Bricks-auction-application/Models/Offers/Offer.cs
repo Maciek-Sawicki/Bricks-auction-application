@@ -48,6 +48,7 @@ namespace Bricks_auction_application.Models.Offers
         public int CategoryId { get; set; }
         [Required]
         public DateTime OfferEndDateTime { get; set; } // Data i godzina zakończenia oferty
+        [ValidateNever]
         public string ImagePath { get; set; }
     }
 }
