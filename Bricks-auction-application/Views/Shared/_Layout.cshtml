@@ -36,6 +36,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
                         </li>
+                        <form asp-controller="Offers" asp-action="Index" method="get">
+                            <p>
+                                Search Set by Name:
+                                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+                                <input type="submit" value="Search" />
+                            </p>
+                        </form>
                     </ul>
                 </div>
             </div>
@@ -58,4 +65,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-```

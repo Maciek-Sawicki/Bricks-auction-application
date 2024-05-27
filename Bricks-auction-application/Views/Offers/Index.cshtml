@@ -4,6 +4,7 @@
     ViewData["Title"] = "Offers";
     var currentSortOrder = ViewData["CurrentSortOrder"] != null ? ViewData["CurrentSortOrder"].ToString() : "Name_desc";
     var currentSortDirection = ViewData["CurrentSortDirection"] != null ? ViewData["CurrentSortDirection"].ToString() : "ascending";
+    var searchString = ViewData["CurrentFilter"] as string;
 }
 <partial name="_Notification" />
 
@@ -12,22 +13,21 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-
-<form asp-action="Index" method="get" id="sortForm">
+<form asp-action="Index" method="get" id="filterForm">
     <p>
+        Min Price: <input type="number" name="minPrice" value="@ViewData["CurrentMinPrice"]" />
+        Max Price: <input type="number" name="maxPrice" value="@ViewData["CurrentMaxPrice"]" />
         Sort by:
         <select name="sortOrder">
-            <option value="Name" selected="@("Name" == currentSortOrder)">Name</option>
-            <option value="Price" selected="@("Price" == currentSortOrder)">Price</option>
-            <option value="OfferEndDateTime" selected="@("OfferEndDateTime" == currentSortOrder)">Offer End Date</option>
+            <option value="Name" selected="@(ViewData["CurrentSortOrder"] as string == "Name" ? "selected" : "")">Name</option>
+            <option value="Price" selected="@(ViewData["CurrentSortOrder"] as string == "Price" ? "selected" : "")">Price</option>
+            <option value="OfferEndDateTime" selected="@(ViewData["CurrentSortOrder"] as string == "OfferEndDateTime" ? "selected" : "")">Offer End Date</option>
         </select>
-
         <select name="sortDirection">
-            <option value="ascending" selected="@("ascending" == currentSortDirection)">Ascending</option>
-            <option value="descending" selected="@("descending" == currentSortDirection)">Descending</option>
+            <option value="ascending" selected="@(ViewData["CurrentSortDirection"] as string == "ascending" ? "selected" : "")">Ascending</option>
+            <option value="descending" selected="@(ViewData["CurrentSortDirection"] as string == "descending" ? "selected" : "")">Descending</option>
         </select>
-
-        <input type="button" value="Sort" onclick="sortOffers();" />
+        <input type="submit" value="Filter" />
     </p>
 </form>
 
@@ -35,16 +35,27 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LEGOSet.Name)
+                <p>Image</p>
+            <th>
+                    @Html.DisplayNameFor(model => model.LEGOSet.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.Username)
+                    @Html.DisplayNameFor(model => model.User.Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                    @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OfferEndDateTime)
+                    @Html.DisplayNameFor(model => model.OfferEndDateTime)
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
             </th>
         </tr>
     </thead>
@@ -52,6 +63,9 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    <img src="@item.ImagePath" class="img-fluid" style="max-height: 100px;" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.LEGOSet.Name)
                 </td>
@@ -64,6 +78,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.OfferEndDateTime)
                 </td>
+
+
+
+
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.OfferId }) |
                     @Html.ActionLink("Details", "Details", new { id = item.OfferId }) |
@@ -75,12 +93,11 @@
 </table>
 
 <script>
+    // Obsługa zachowania formularza przy sortowaniu
     function sortOffers() {
         var sortOrder = document.getElementsByName("sortOrder")[0].value;
-        var sortDirection = document.getElementsByName("sortDirection")[0].value;
-
-        var form = document.getElementById("sortForm");
-        form.action = "/Offers?sortOrder=" + sortOrder + "&sortDirection=" + sortDirection;
+        var form = document.getElementById("filterForm");
+        form.action = "/Offers?sortOrder=" + sortOrder;
         form.submit();
     }
 </script>

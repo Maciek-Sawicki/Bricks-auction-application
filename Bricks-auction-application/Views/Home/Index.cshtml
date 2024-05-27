@@ -6,13 +6,6 @@
 
 <h2>Welcome to Bricks Auction Platform</h2>
 
-<form asp-controller="Home" asp-action="Index" method="get">
-    <p>
-        Search Set by Name or Set ID:
-        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
-        <input type="submit" value="Search" />
-    </p>
-</form>
 
 <div class="row">
     @foreach (var offer in Model)

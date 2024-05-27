@@ -25,16 +25,29 @@ namespace Bricks_auction_application.Controllers
         }
 
         // GET: Offers
-        public async Task<IActionResult> Index(string sortOrder, string sortDirection)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, string sortDirection)
         {
-            ViewData["NameSort"] = sortOrder == "Name" ? "name_desc" : "";
-            ViewData["PriceSort"] = sortOrder == "Price" ? "price_desc" : "Price";
-            ViewData["OfferEndDateTimeSort"] = sortOrder == "OfferEndDateTime" ? "offerEndDateTime_desc" : "OfferEndDateTime";
+            // Przypisanie wartości zmiennym ViewData
             ViewData["CurrentSortOrder"] = sortOrder;
             ViewData["CurrentSortDirection"] = sortDirection;
+            ViewData["CurrentSearchString"] = searchString;
+            ViewData["CurrentMinPrice"] = minPrice;
+            ViewData["CurrentMaxPrice"] = maxPrice;
 
-            var offers = await _unitOfWork.Offer.GetAllAsync();
+            // Pobranie ofert z repozytorium
+            var offers = (await _unitOfWork.Offer.GetAllAsync()).AsQueryable();
 
+            // Zastosowanie sortowania
+            offers = SortOffers(offers, sortOrder, sortDirection);
+
+            // Filtruj oferty
+            offers = FilterOffers(offers, searchString, minPrice, maxPrice);
+
+            // Przekazanie ofert do widoku
+            return View(offers.ToList());
+        }
+        private IQueryable<Offer> SortOffers(IQueryable<Offer> offers, string sortOrder, string sortDirection)
+        {
             switch (sortOrder)
             {
                 case "Name":
@@ -50,9 +63,29 @@ namespace Bricks_auction_application.Controllers
                     offers = offers.OrderBy(o => o.LEGOSet.Name);
                     break;
             }
-
-            return View(offers.ToList());
+            return offers;
         }
+
+        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice)
+        {
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                offers = offers.Where(s => s.LEGOSet.Name.Contains(searchString));
+            }
+
+            if (minPrice != null)
+            {
+                offers = offers.Where(o => o.Price >= minPrice);
+            }
+
+            if (maxPrice != null)
+            {
+                offers = offers.Where(o => o.Price <= maxPrice);
+            }
+
+            return offers;
+        }
+
 
         // GET: Offers/Details/5
         public IActionResult Details(int? id)

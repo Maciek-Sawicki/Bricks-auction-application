@@ -81,9 +81,19 @@ namespace Bricks_auction_application.Models.System.Respository
             return query.FirstOrDefault();
         }
 
-        public void Remove(Offer offer)
+        public void Remove(int id)
         {
-            throw new NotImplementedException();
+            Remove(id);
+        }
+
+        public void Remove(Offer entity)
+        {
+            _db.Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<Offer> entity)
+        {
+            _db.RemoveRange(entity);
         }
 
         public async Task<IEnumerable<Offer>> GetAllAsync(Expression<Func<Offer, bool>> filter = null, Func<IQueryable<Offer>, IOrderedQueryable<Offer>> orderBy = null)
