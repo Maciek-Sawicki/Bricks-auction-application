@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Models\System\Repository\Repository\" />
+    <Folder Include="wwwroot\images\category\" />
     <Folder Include="wwwroot\images\offer\" />
   </ItemGroup>
 

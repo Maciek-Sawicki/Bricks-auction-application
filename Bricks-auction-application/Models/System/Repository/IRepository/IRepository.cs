@@ -10,7 +10,8 @@ namespace Bricks_auction_application.Models.System.Repository.IRepository
         T Get(int id);
         IEnumerable<T> GetAll(
             Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = null);
         void Add(T entity);
         void Remove(int id);
         void Remove(T entity);

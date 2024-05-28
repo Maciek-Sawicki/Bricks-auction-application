@@ -1,146 +1,181 @@
-﻿using System.Threading.Tasks;
+﻿using Bricks_auction_application.Models.System.Repository.IRepository;
+using Bricks_auction_application.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Bricks_auction_application.Models.Sets;
-using Bricks_auction_application.Models.System.Repository.IRepository;
-using Bricks_auction_application.Models.System.Respository;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
-namespace Bricks_auction_application.Controllers
+public class CategoriesController : Controller
 {
-    public class CategoriesController : Controller
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
+    public CategoriesController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
     {
-        private readonly IUnitOfWork _unitofwork;
+        _unitOfWork = unitOfWork;
+        _webHostEnvironment = webHostEnvironment;
+    }
 
-        public CategoriesController(IUnitOfWork unitofwork)
+    public IActionResult Index()
+    {
+        var categories = _unitOfWork.Category.GetAllCategories();
+        return View(categories);
+    }
+
+    public IActionResult Create()
+    {
+        return View(new CategoryVM());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CategoryVM categoryVM, IFormFile ImageFile)
+    {
+        if (ModelState.IsValid)
         {
-            _unitofwork = unitofwork;
-        }
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-        // GET: Categories
-        public IActionResult Index()
-        {
-            var objCategoryList = _unitofwork.Category.GetAll();
-            return View(objCategoryList);
-        }
-
-        // GET: Categories/Details/5
-        public IActionResult Details(int? id)
-        {
-            if (id == null)
+            // Upload Image
+            if (ImageFile != null && ImageFile.Length > 0)
             {
-                return NotFound();
-            }
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                string folderPath = Path.Combine(wwwRootPath, "images", "category");
+                string filePath = Path.Combine(folderPath, fileName);
 
-            var category = _unitofwork.Category.Get(id.Value);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
-        // GET: Categories/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Categories/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,CategoryName")] Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitofwork.Category.Add(category);
-                _unitofwork.Save();
-                TempData["success"] = "Category created successfully";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
-        }
-
-        // GET: Categories/Edit/5
-        public IActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = _unitofwork.Category.Get(id.Value);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
-        }
-
-        // POST: Categories/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,CategoryName")] Category category)
-        {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (!Directory.Exists(folderPath))
                 {
-                    _unitofwork.Category.Update(category);
-                    _unitofwork.Save();
+                    Directory.CreateDirectory(folderPath);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    if (!_unitofwork.Category.Exists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await ImageFile.CopyToAsync(fileStream);
                 }
-                TempData["success"] = "Category updated successfully";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
-        }
 
-        // GET: Categories/Delete/5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                categoryVM.category.ImagePath = Path.Combine("images", "category", fileName).Replace("\\", "/");
             }
 
-            var category = _unitofwork.Category.Get(id.Value);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
-        // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var category = _unitofwork.Category.Get(id);
-            if (category != null)
-            {
-                _unitofwork.Category.Delete(category);
-                _unitofwork.Save();
-                TempData["success"] = "Category deleted successfully";
-            }
+            _unitOfWork.Category.Add(categoryVM.category);
+            _unitOfWork.Save();
+            TempData["success"] = "Category created successfully";
             return RedirectToAction(nameof(Index));
         }
+        return View(categoryVM);
     }
+
+    public IActionResult Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var category = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        return View(new CategoryVM { category = category });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, CategoryVM categoryVM, IFormFile ImageFile)
+    {
+        if (id != categoryVM.category.Id)
+        {
+            return NotFound();
+        }
+
+        var categoryFromDb = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
+        if (categoryFromDb == null)
+        {
+            return NotFound();
+        }
+
+        string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+        // Upload Image
+        if (ImageFile != null && ImageFile.Length > 0)
+        {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+            string folderPath = Path.Combine(wwwRootPath, "images", "category");
+            string filePath = Path.Combine(folderPath, fileName);
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await ImageFile.CopyToAsync(fileStream);
+            }
+
+            categoryFromDb.ImagePath = Path.Combine("images", "category", fileName).Replace("\\", "/");
+        }
+
+        categoryFromDb.CategoryName = categoryVM.category.CategoryName;
+        _unitOfWork.Category.Update(categoryFromDb);
+        _unitOfWork.Save();
+        TempData["success"] = "Category updated successfully";
+        return RedirectToAction(nameof(Index));
+    }
+
+    public IActionResult Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var category = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        var categoryVM = new CategoryVM { category = category };
+        return View(categoryVM);
+    }
+
+    public IActionResult Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var category = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        var categoryVM = new CategoryVM { category = category };
+        return View(categoryVM);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteConfirmed(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var category = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
+        if (category != null)
+        {
+            _unitOfWork.Category.Remove(category);
+            _unitOfWork.Save();
+            TempData["success"] = "Category deleted successfully";
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
 }

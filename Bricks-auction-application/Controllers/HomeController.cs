@@ -1,37 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Bricks_auction_application.Models.ViewModels;
+using Bricks_auction_application.Models.System.Repository.IRepository;
+using System.Threading.Tasks;
+using System.Linq;
 using Bricks_auction_application.Models;
-using Bricks_auction_application.Models.Offers;
+using System.Diagnostics;
 
 namespace Bricks_auction_application.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly BricksAuctionDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(BricksAuctionDbContext context)
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index(string searchString)
         {
-            // Pobranie ofert wraz z powi¹zanymi zestawami LEGO i u¿ytkownikami
-            var offers = from o in _context.Offers.Include(o => o.LEGOSet).Include(o => o.User)
-                         select o;
-
-            // Jeœli jest zdefiniowany ci¹g wyszukiwania, filtrujemy oferty
+            var offers = _unitOfWork.Offer.GetAll(includeProperties: "LEGOSet,User");
             if (!string.IsNullOrEmpty(searchString))
             {
-                offers = offers.Where(o => o.LEGOSet.Name.Contains(searchString) || o.LEGOSet.Id.ToString().Contains(searchString));
+                offers = offers.Where(o => o.LEGOSet.Name.ToLower().Contains(searchString.ToLower()) || o.LEGOSet.Id.ToString().Contains(searchString.ToLower()));
             }
 
-            return View(await offers.ToListAsync());
+            var categories = _unitOfWork.Category.GetAll();
+
+            var homeViewModel = new HomeViewModel
+            {
+                Offers = offers,
+                Categories = categories
+            };
+
+            return View(homeViewModel);
         }
 
         [HttpPost]
@@ -39,33 +41,6 @@ namespace Bricks_auction_application.Controllers
         {
             return RedirectToAction("Index", new { searchString = searchFilter });
         }
-
-        /*public async Task<IActionResult> Index()
-        {
-            var offers = await _context.Offers.Include(o => o.LEGOSet).Include(o => o.User).ToListAsync();
-            return View(offers);
-        }*/
-
-
-        /* public IActionResult About()
-         {
-             ViewData["Message"] = "Your application description page.";
-
-             return View();
-         }
-
-         public IActionResult Contact()
-         {
-             ViewData["Message"] = "Your contact page.";
-
-             return View();
-         }
-
-         public IActionResult Privacy()
-         {
-             return View();
-         }
-        */
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

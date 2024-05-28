@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bricks_auction_application.Models.Offers.Offer>
+﻿@model Bricks_auction_application.Models.ViewModels.HomeViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -6,9 +6,24 @@
 
 <h2>Welcome to Bricks Auction Platform</h2>
 
-
+<h3>Categories</h3>
 <div class="row">
-    @foreach (var offer in Model)
+    @foreach (var category in Model.Categories)
+    {
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <img class="card-img-top" src="@category.ImagePath" alt="@category.CategoryName"/>
+                <div class="card-body">
+                    <h5 class="card-title">@category.CategoryName</h5>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<h3>Offers</h3>
+<div class="row">
+    @foreach (var offer in Model.Offers)
     {
         <div class="col-md-4">
             <div class="card mb-4 shadow-sm">

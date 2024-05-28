@@ -111,12 +111,19 @@ namespace Bricks_auction_application.Models.System.Repository
 
         public void Remove(int id)
         {
-            throw new NotImplementedException();
+            T entityToRemove = dbSet.Find(id);
+            if (entityToRemove != null)
+            {
+                dbSet.Remove(entityToRemove);
+            }
         }
 
         public void Remove(T entity)
         {
-            throw new NotImplementedException();
+            if (entity != null)
+            {
+                dbSet.Remove(entity);
+            }
         }
     }
 }
