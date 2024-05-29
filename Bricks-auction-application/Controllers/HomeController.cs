@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Bricks_auction_application.Models.ViewModels;
 using Bricks_auction_application.Models.System.Repository.IRepository;
-using System.Threading.Tasks;
-using System.Linq;
 using Bricks_auction_application.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Bricks_auction_application.Models.Sets;
 
 namespace Bricks_auction_application.Controllers
 {
@@ -16,7 +16,6 @@ namespace Bricks_auction_application.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
         public async Task<IActionResult> Index(string searchString)
         {
             var offers = _unitOfWork.Offer.GetAll(includeProperties: "LEGOSet,User");
@@ -25,7 +24,12 @@ namespace Bricks_auction_application.Controllers
                 offers = offers.Where(o => o.LEGOSet.Name.ToLower().Contains(searchString.ToLower()) || o.LEGOSet.Id.ToString().Contains(searchString.ToLower()));
             }
 
-            var categories = _unitOfWork.Category.GetAll();
+            var categories = _unitOfWork.Category.GetAllCategories();
+
+            if (categories == null)
+            {
+                categories = new List<Category>(); // Przypisanie pustej listy kategorii, jeœli jest nullem
+            }
 
             var homeViewModel = new HomeViewModel
             {
@@ -35,6 +39,9 @@ namespace Bricks_auction_application.Controllers
 
             return View(homeViewModel);
         }
+
+
+
 
         [HttpPost]
         public IActionResult IndexPost(string searchFilter)
@@ -46,6 +53,11 @@ namespace Bricks_auction_application.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult FilterByCategory(int categoryId)
+        {
+            // Przekieruj do akcji Index w kontrolerze Offers, przekazuj¹c ID kategorii jako parametr
+            return RedirectToAction("Index", "Offers", new { categoryId = categoryId });
         }
     }
 }

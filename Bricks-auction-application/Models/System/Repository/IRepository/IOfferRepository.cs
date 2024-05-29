@@ -15,5 +15,6 @@ namespace Bricks_auction_application.Models.System.Repository.IRepository
         void Remove(Offer offer);
         Task<IEnumerable<Offer>> GetAllAsync(Expression<Func<Offer, bool>> filter = null, Func<IQueryable<Offer>, IOrderedQueryable<Offer>> orderBy = null);
         Task<Offer> GetAsync(int id);
+        IEnumerable<Offer> GetOffersByCategory(int categoryId);
     }
 }

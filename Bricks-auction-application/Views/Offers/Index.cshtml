@@ -4,8 +4,9 @@
     ViewData["Title"] = "Offers";
     var currentSortOrder = ViewData["CurrentSortOrder"] != null ? ViewData["CurrentSortOrder"].ToString() : "Name_desc";
     var currentSortDirection = ViewData["CurrentSortDirection"] != null ? ViewData["CurrentSortDirection"].ToString() : "ascending";
-    var searchString = ViewData["CurrentFilter"] as string;
+    var searchString = ViewData["CurrentCategoryId"] as string;
 }
+
 <partial name="_Notification" />
 
 <h2>Offers</h2>
@@ -27,6 +28,18 @@
             <option value="ascending" selected="@(ViewData["CurrentSortDirection"] as string == "ascending" ? "selected" : "")">Ascending</option>
             <option value="descending" selected="@(ViewData["CurrentSortDirection"] as string == "descending" ? "selected" : "")">Descending</option>
         </select>
+        Category:
+        <select name="categoryId" class="form-control">
+            <option value="">All Categories</option>
+            @foreach (var category in ViewBag.Categories as SelectList)
+            {
+                        <option value="@category.Value" selected="@(ViewData["CurrentCategoryId"] != null && ViewData["CurrentCategoryId"].ToString() == category.Value ? "selected" : "")">
+                            @category.Text
+                        </option>
+
+            }
+        </select>
+
         <input type="submit" value="Filter" />
     </p>
 </form>
@@ -36,27 +49,22 @@
         <tr>
             <th>
                 <p>Image</p>
-            <th>
-                    @Html.DisplayNameFor(model => model.LEGOSet.Name)
             </th>
             <th>
-                    @Html.DisplayNameFor(model => model.User.Username)
+                @Html.DisplayNameFor(model => model.LEGOSet.Name)
             </th>
             <th>
-                    @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.User.Username)
             </th>
             <th>
-                    @Html.DisplayNameFor(model => model.OfferEndDateTime)
+                @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
-
+                @Html.DisplayNameFor(model => model.OfferEndDateTime)
             </th>
-            <th>
-
-            </th>
-            <th>
-
-            </th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -78,10 +86,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.OfferEndDateTime)
                 </td>
-
-
-
-
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.OfferId }) |
                     @Html.ActionLink("Details", "Details", new { id = item.OfferId }) |

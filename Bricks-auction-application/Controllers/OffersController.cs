@@ -25,7 +25,7 @@ namespace Bricks_auction_application.Controllers
         }
 
         // GET: Offers
-        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, string sortDirection)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, string sortDirection, int? categoryId)
         {
             // Przypisanie wartości zmiennym ViewData
             ViewData["CurrentSortOrder"] = sortOrder;
@@ -33,9 +33,20 @@ namespace Bricks_auction_application.Controllers
             ViewData["CurrentSearchString"] = searchString;
             ViewData["CurrentMinPrice"] = minPrice;
             ViewData["CurrentMaxPrice"] = maxPrice;
+            ViewData["CurrentCategoryId"] = categoryId;
+
+            // Pobranie wszystkich kategorii
+            var categories = _unitOfWork.Category.GetAll();
+            ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
 
             // Pobranie ofert z repozytorium
             var offers = (await _unitOfWork.Offer.GetAllAsync()).AsQueryable();
+
+            // Filtruj według kategorii
+            if (categoryId.HasValue && categoryId > 0)
+            {
+                offers = offers.Where(o => o.CategoryId == categoryId);
+            }
 
             // Zastosowanie sortowania
             offers = SortOffers(offers, sortOrder, sortDirection);
@@ -46,6 +57,8 @@ namespace Bricks_auction_application.Controllers
             // Przekazanie ofert do widoku
             return View(offers.ToList());
         }
+
+
         private IQueryable<Offer> SortOffers(IQueryable<Offer> offers, string sortOrder, string sortDirection)
         {
             switch (sortOrder)

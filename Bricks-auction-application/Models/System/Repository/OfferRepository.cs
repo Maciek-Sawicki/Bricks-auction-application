@@ -120,7 +120,10 @@ namespace Bricks_auction_application.Models.System.Respository
         {
             return await dbSet.FindAsync(id);
         }
-
+        public IEnumerable<Offer> GetOffersByCategory(int categoryId)
+        {
+            return _db.Offers.Where(o => o.CategoryId == categoryId).ToList();
+        }
     }
 
 }

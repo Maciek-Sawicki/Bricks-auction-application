@@ -25,5 +25,16 @@ namespace Bricks_auction_application.Models.System.Repository
         {
             _db.SaveChanges();
         }
+
+        public async Task SaveAsync()
+        {
+            await _db.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _db.Dispose();
+        }
+
     }
 }

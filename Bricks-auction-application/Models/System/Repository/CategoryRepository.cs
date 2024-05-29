@@ -43,7 +43,7 @@ namespace Bricks_auction_application.Models.System.Repository
 
         public Category GetFirstOrDefault(Expression<Func<Category, bool>> filter = null)
         {
-            IQueryable<Category> query = dbSet;
+            IQueryable<Category> query = _db.Categories;
 
             if (filter != null)
             {
@@ -52,7 +52,6 @@ namespace Bricks_auction_application.Models.System.Repository
 
             return query.FirstOrDefault();
         }
-
 
         public async Task<Category> GetAsync(int id)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Bricks_auction_application.Models.Offers;
 using Bricks_auction_application.Models.System.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
@@ -125,5 +126,6 @@ namespace Bricks_auction_application.Models.System.Repository
                 dbSet.Remove(entity);
             }
         }
+
     }
 }
