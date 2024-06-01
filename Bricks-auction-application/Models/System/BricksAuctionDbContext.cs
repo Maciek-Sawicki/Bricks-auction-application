@@ -5,10 +5,12 @@ using Bricks_auction_application.Models.Users;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bricks_auction_application.Models
 {
-    public class BricksAuctionDbContext : DbContext
+    public class BricksAuctionDbContext : IdentityDbContext<IdentityUser>
     {
         public BricksAuctionDbContext(DbContextOptions<BricksAuctionDbContext> options) : base(options)
         {
@@ -23,10 +25,10 @@ namespace Bricks_auction_application.Models
         public DbSet<OrderedCartItem> OrderedCartItems { get; set; }
         public DbSet<OrderedCart> OrderedCarts { get; set; }
         public DbSet<OrdersHistory> OrdersHistories { get; set; }
-        public DbSet<SellerReview> SellerReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<CartItem>()
                 .HasOne(c => c.Offer)
                 .WithMany()

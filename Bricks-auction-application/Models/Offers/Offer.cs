@@ -14,20 +14,21 @@ namespace Bricks_auction_application.Models.Offers
         [Key]
         public int OfferId { get; set; }
 
-        [Required]
-        public int UserId { get; set; } // Identyfikator użytkownika wystawiającego ofertę
+        [ValidateNever]
+
+        public string UserId { get; set; } // Identyfikator użytkownika wystawiającego ofertę
 
         // Relacja z użytkownikiem
         [ForeignKey("UserId")]
         [ValidateNever]
         public User User { get; set; }
 
-        [Required]
+        [ValidateNever]
         public int LEGOSetId { get; set; } // Numer zestawu LEGO, który jest przedmiotem oferty
 
         // Relacja z zestawem LEGO
         [ForeignKey("LEGOSetId")]
-        [ValidateNever]
+        
         public Set LEGOSet { get; set; }
 
         //[Required]

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Bricks_auction_application.StaticDetails
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,18 +26,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sets" asp-action="Index">Sets</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Offers" asp-action="Index">Offers</a>
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Sets" asp-action="Index">Sets</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Categories" asp-action="Index">Categories</a>
+                            </li>
+                        }
 
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Offers" asp-action="Index">Offers</a>
+
                         </li>
                         <form asp-controller="Offers" asp-action="Index" method="get">
                             <p>
@@ -44,6 +51,7 @@
                             </p>
                         </form>
                     </ul>
+                    <partial name="_LoginPartial"/>
                 </div>
             </div>
         </nav>

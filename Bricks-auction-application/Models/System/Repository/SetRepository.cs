@@ -43,7 +43,7 @@ namespace Bricks_auction_application.Models.System.Respository
             {
                 dbObj.Name = obj.Name;
                 dbObj.CategoryId = obj.CategoryId;
-                dbObj.Price = obj.Price;
+                dbObj.ListPrice = obj.ListPrice;
                 dbObj.Description = obj.Description;
                 dbObj.ImagePath = obj.ImagePath;
                 // Add other properties to update as needed

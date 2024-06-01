@@ -13,7 +13,7 @@ namespace Bricks_auction_application.Models.Users
         public int OrderHistoryId { get; set; }
 
         [ForeignKey("UserId")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         // Relacja z użytkownikiem
         

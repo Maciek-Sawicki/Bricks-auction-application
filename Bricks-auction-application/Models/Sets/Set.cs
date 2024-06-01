@@ -19,8 +19,10 @@ namespace Bricks_auction_application.Models.Items
         [Required]
         public string Name { get; set; }
 
+        public string EnglishName { get; set; }
         public string Description { get; set; }
-
+        public int Pieces { get; set; }
+        public int Minifigures { get; set; }
         [Required]
         public int ReleaseYear { get; set; }
 
@@ -31,7 +33,7 @@ namespace Bricks_auction_application.Models.Items
         public Category Category { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
+        public decimal ListPrice { get; set; }
         public string ImagePath { get; set; }
     }
 }

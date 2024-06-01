@@ -13,7 +13,7 @@ namespace Bricks_auction_application.Models.Users
         public int CartId { get; set; }
 
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         // Relacja z użytkownikiem
         [ValidateNever]
