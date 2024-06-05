@@ -13,6 +13,7 @@ namespace Bricks_auction_application.Models.Sets
 
         [Required]
         [ValidateNever]
+        [Display(Name = "Kategoria")]
         public string CategoryName { get; set; }
         [ValidateNever]
         public string ImagePath { get; set; }

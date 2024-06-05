@@ -4,47 +4,92 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1 style="margin: 50px 0 ;">
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.LEGOSet.Name)
+        @Html.DisplayFor(model => model.LEGOSet.SetId)
+    </dd>
+</h1>
 
-<div>
-    <h4>Offer</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LEGOSet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LEGOSet.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OfferEndDateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OfferEndDateTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LEGOSet.Pieces)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LEGOSet.Pieces)
-        </dd>
-        <dd class="col-sm-10">
-            <img src="~/@Model.ImagePath" class="img-fluid" style="max-height: 100px;" />
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-sm-6">
+        <img src="~/@Model.ImagePath" class="img-fluid" style="padding: 30px;" />
+    </div>
+    <div class="col-sm-6 d-flex flex-column">
+        <h4>Oferta</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.Name)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.Name)
+            </dd>
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.EnglishName)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.EnglishName)
+            </dd>
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.SetId)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.SetId)
+            </dd>
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.Pieces)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.Pieces)
+            </dd>
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.Minifigures)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.Minifigures)
+            </dd>
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.ReleaseYear)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.ReleaseYear)
+            </dd>
+            <dt class="col-6">
+                @Html.DisplayNameFor(model => model.LEGOSet.ListPrice)
+            </dt>
+            <dd class="col-6" style="text-align: right;">
+                @Html.DisplayFor(model => model.LEGOSet.ListPrice) zł
+            </dd>
+        </dl>
+        <div class="mt-auto">
+            <dl class="row">
+                <dt class="col-6">
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
+                <dd class="col-6" style="text-align: right;">
+                    @Html.DisplayFor(model => model.Price) zł
+                </dd>
+                <dt class="col-6">
+                    @Html.DisplayNameFor(model => model.OfferEndDateTime)
+                </dt>
+                <dd class="col-6" style="text-align: right;">
+                    @Html.DisplayFor(model => model.OfferEndDateTime)
+                </dd>
+            </dl>
+        </div>
+    </div>
 </div>
+
+<div class="row" style="margin: 50px 0 ;">
+    <dt class="col-12">
+        @Html.DisplayNameFor(model => model.LEGOSet.Description)
+    </dt>
+    <dd class="col-12">
+        @Html.DisplayFor(model => model.LEGOSet.Description)
+    </dd>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.OfferId">Edit</a> |
     <a asp-action="Index">Back to List</a>

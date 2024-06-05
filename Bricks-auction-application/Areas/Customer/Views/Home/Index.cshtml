@@ -4,17 +4,15 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h2>Welcome to Bricks Auction Platform</h2>
-
-<h3>Categories</h3>
+<h3 style="margin-bottom: 30px;">Kategorie</h3>
 <div class="row">
     @foreach (var category in Model.Categories)
     {
-        <div class="col-md-3">
-            <div class="card mb-3">
-                <a  href="@Url.Action("Index", "Offers", new { categoryId = category.Id })">
-                    <img class="card-img-top" src="@category.ImagePath" alt="@category.CategoryName" />
-                    <div class="card-body">
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 text-center">
+                <a href="@Url.Action("Index", "Offers", new { categoryId = category.Id })" class="text-decoration-none text-dark d-block">
+                    <img class="card-img-top" src="@category.ImagePath" alt="@category.CategoryName" style="height: 300px; object-fit: cover;" />
+                    <div class="card-body d-flex flex-column justify-content-center">
                         <h5 class="card-title">@category.CategoryName</h5>
                     </div>
                 </a>
@@ -24,21 +22,21 @@
 </div>
 
 
-<h3>Offers</h3>
+<h3 style="margin-bottom: 30px;">Oferty</h3>
 <div class="row">
     @foreach (var offer in Model.Offers)
     {
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                    <img src="@offer.ImagePath" class="img-fluid mb-3" style="max-height: 200px; object-fit: contain;" />
                     <h5 class="card-title">@offer.LEGOSet.Name</h5>
                     <p class="card-text">@offer.User.Username</p>
-                    <p class="card-text">Price: @offer.Price.ToString("C")</p>
-                    <p class="card-text">Offer End Date: @offer.OfferEndDateTime.ToString("dd/MM/yyyy")</p>
-                    <img src="@offer.ImagePath" class="img-fluid" />
-                    <div class="d-flex justify-content-between align-items-center">
+                    <p class="card-text">Cena: @offer.Price.ToString("C")</p>
+                    <p class="card-text">Data zakończenia: @offer.OfferEndDateTime.ToString("dd/MM/yyyy")</p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <a href="@Url.Action("Details", "Offers", new { id = offer.OfferId })" class="btn btn-sm btn-outline-secondary">View</a>
+                            <a href="@Url.Action("Details", "Offers", new { id = offer.OfferId })" class="btn btn-sm btn-outline-secondary">Zobacz więcej</a>
                         </div>
                     </div>
                 </div>
@@ -46,3 +44,6 @@
         </div>
     }
 </div>
+
+
+
