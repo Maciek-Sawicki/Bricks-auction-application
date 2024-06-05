@@ -20,3 +20,18 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.searchbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-item form {
+    height: 40px;
+    margin-left: 20px;
+}
+
+.nav-item form div {
+    height: 100%;
+}
