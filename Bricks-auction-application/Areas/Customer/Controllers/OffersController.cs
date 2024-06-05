@@ -127,7 +127,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         // GET: Offers/Create
         public IActionResult Create()
         {
-            ViewData["LEGOSetId"] = new SelectList(_unitOfWork.Set.GetAll(), "Id", "Name");
+            ViewData["LEGOSetId"] = new SelectList(_unitOfWork.Set.GetAll(), "Id", "SetId");
             // Pobierz zalogowanego użytkownika
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewData["UserId"] = userId;
