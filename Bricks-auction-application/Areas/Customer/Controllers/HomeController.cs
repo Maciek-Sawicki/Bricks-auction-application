@@ -5,6 +5,7 @@ using Bricks_auction_application.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Bricks_auction_application.Models.Sets;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
@@ -20,10 +21,6 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         public async Task<IActionResult> Index(string searchString)
         {
             var offers = _unitOfWork.Offer.GetAll(includeProperties: "LEGOSet,User");
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                offers = offers.Where(o => o.LEGOSet.Name.ToLower().Contains(searchString.ToLower()) || o.LEGOSet.Id.ToString().Contains(searchString.ToLower()));
-            }
 
             var categories = _unitOfWork.Category.GetAllCategories();
 

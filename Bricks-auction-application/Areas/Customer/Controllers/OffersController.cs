@@ -88,9 +88,12 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
         private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice)
         {
+
             if (!string.IsNullOrEmpty(searchString))
             {
-                offers = offers.Where(s => s.LEGOSet.Name.Contains(searchString));
+                searchString = searchString.ToLower();
+                offers = offers.Where(o => o.LEGOSet.Name.ToLower().Contains(searchString) ||
+                                           o.LEGOSet.SetId.ToString().ToLower().Contains(searchString));
             }
 
             if (minPrice != null)
