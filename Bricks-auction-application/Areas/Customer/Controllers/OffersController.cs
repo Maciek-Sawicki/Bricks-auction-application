@@ -145,7 +145,8 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 if (currentUser == null)
                 {
                     // Obsłuż sytuację, gdy użytkownik nie jest zalogowany
-                    return RedirectToAction("Login", "Account");
+                    //return RedirectToAction("Login", "Account");
+                    return RedirectToAction("Login", "Account", new { area = "Identity" });
                 }
 
                 // Przypisz UserId do oferty
