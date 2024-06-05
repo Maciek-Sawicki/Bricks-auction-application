@@ -18,45 +18,40 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" style="font-size:40px" asp-area="" asp-controller="Home" asp-action="Index">Kloc<span style="color:#3AF04F">X</span></a>
+                <a class="navbar-brand" style="font-size:40px; font-weight: 600;" asp-area="" asp-controller="Home" asp-action="Index">Kloc<span style="color:#3AF04F">X</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                    <ul class="navbar-nav">
                         @if (User.IsInRole(SD.Role_Admin))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a>
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">Użytkownicy</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Sets" asp-action="Index">Sets</a>
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Sets" asp-action="Index">Zestawy</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Categories" asp-action="Index">Categories</a>
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Categories" asp-action="Index">Kategorie</a>
                             </li>
                         }
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Offers" asp-action="Index">Offers</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Offers" asp-action="Index">Oferty</a>
 
-                        </li>
-                        <li class="nav-item">
-
-
-
-                            <form asp-controller="Offers" asp-action="Index" method="get">
-                                <div class="searchbar">
-                                    <input type="text" placeholder="Search set" name="searchString" value="@ViewData["CurrentFilter"]" />
-                                    <input type="submit" value="Search" />
-                                </div>
-                            </form>
                         </li>
                     </ul>
+                    <form asp-controller="Offers" asp-action="Index" method="get" class="form-inline w-25">
+                        <div class="searchbar input-group">
+                            <input type="text" class="form-control rounded" placeholder="Szukaj zestawów" name="searchString" value="@ViewData["CurrentFilter"]" />
+                            <input type="submit" value="Szukaj" class="btn btn-outline-secondary"  />
+                        </div>
+
+
+                       
+                    </form>
                     <partial name="_LoginPartial"/>
                 </div>
             </div>

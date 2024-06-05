@@ -9,46 +9,116 @@
 
 <partial name="_Notification" />
 
-<h2>Offers</h2>
+<div class="row">
+    <h2 class="d-inline align-middle mt-3 mb-3 col-md-6">Przeglądaj Oferty!</h2>
+    <div class="form-group mb-2 d-inline ml-auto col-md-6 text-end align-content-center">
+    <input type="submit" value="Dodaj nową ofertę" class="btn btn-outline-secondary" />
+</div>
+</div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<form asp-action="Index" method="get" id="filterForm">
-    <p>
-        Min Price: <input type="number" name="minPrice" value="@ViewData["CurrentMinPrice"]" />
-        Max Price: <input type="number" name="maxPrice" value="@ViewData["CurrentMaxPrice"]" />
-        Sort by:
-        <select name="sortOrder">
-            <option value="Name" selected="@(ViewData["CurrentSortOrder"] as string == "Name" ? "selected" : "")">Name</option>
-            <option value="Price" selected="@(ViewData["CurrentSortOrder"] as string == "Price" ? "selected" : "")">Price</option>
-            <option value="OfferEndDateTime" selected="@(ViewData["CurrentSortOrder"] as string == "OfferEndDateTime" ? "selected" : "")">Offer End Date</option>
-        </select>
-        <select name="sortDirection">
-            <option value="ascending" selected="@(ViewData["CurrentSortDirection"] as string == "ascending" ? "selected" : "")">Ascending</option>
-            <option value="descending" selected="@(ViewData["CurrentSortDirection"] as string == "descending" ? "selected" : "")">Descending</option>
-        </select>
-        Category:
-        <select name="categoryId" class="form-control">
-            <option value="">All Categories</option>
-            @foreach (var category in ViewBag.Categories as SelectList)
-            {
+
+
+<form asp-action="Index" method="get" id="filterForm" class="form-inline">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="minPrice" class="mr-2">Cena minimalna:</label>
+                <input type="number" name="minPrice" class="form-control mr-3" id="minPrice" value="@ViewData["CurrentMinPrice"]" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="maxPrice" class="mr-2">Cena maksymalna:</label>
+                <input type="number" name="maxPrice" class="form-control mr-3" id="maxPrice" value="@ViewData["CurrentMaxPrice"]" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="minPrice" class="mr-2">Ilość elementów od:</label>
+                <input type="number" name="minPrice" class="form-control mr-3" id="minPrice" value="@ViewData["CurrentMinPrice"]" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="maxPrice" class="mr-2">Ilość elementów do:</label>
+                <input type="number" name="maxPrice" class="form-control mr-3" id="maxPrice" value="@ViewData["CurrentMaxPrice"]" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="minPrice" class="mr-2">Rok produkcji od:</label>
+                <input type="number" name="minPrice" class="form-control mr-3" id="minPrice" value="@ViewData["CurrentMinPrice"]" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="maxPrice" class="mr-2">Rok produkcji do:</label>
+                <input type="number" name="maxPrice" class="form-control mr-3" id="maxPrice" value="@ViewData["CurrentMaxPrice"]" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group mb-2">
+                <label for="categoryId" class="mr-2">Kategoria:</label>
+                <select name="categoryId" class="form-control mr-3" id="categoryId">
+                    <option value="">Wszystkie kategorie</option>
+                    @foreach (var category in ViewBag.Categories as SelectList)
+                    {
                         <option value="@category.Value" selected="@(ViewData["CurrentCategoryId"] != null && ViewData["CurrentCategoryId"].ToString() == category.Value ? "selected" : "")">
                             @category.Text
                         </option>
-
-            }
-        </select>
-
-        <input type="submit" value="Filter" />
-    </p>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="sortOrder" class="mr-2">Sortuj po:</label>
+                <select name="sortOrder" class="form-control mr-3" id="sortOrder">
+                    <option value="Name" selected="@(ViewData["CurrentSortOrder"] as string == "Name" ? "selected" : "")">Nazwa</option>
+                    <option value="Price" selected="@(ViewData["CurrentSortOrder"] as string == "Price" ? "selected" : "")">Cena</option>
+                    <option value="OfferEndDateTime" selected="@(ViewData["CurrentSortOrder"] as string == "OfferEndDateTime" ? "selected" : "")">Czas zakończenia</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label for="sortDirection" class="mr-2">Kierunek sortowania:</label>
+                <select name="sortDirection" class="form-control mr-3" id="sortDirection">
+                    <option value="ascending" selected="@(ViewData["CurrentSortDirection"] as string == "ascending" ? "selected" : "")">Rosnąco</option>
+                    <option value="descending" selected="@(ViewData["CurrentSortDirection"] as string == "descending" ? "selected" : "")">Malejąco</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group mb-2">
+                <input type="submit" value="Filtruj" class="btn btn-outline-secondary mt-3 mb-3" />
+            </div>
+        </div>
+    </div>
 </form>
+
+
+
+
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                Image
+                Zdjęcie
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LEGOSet.Name)

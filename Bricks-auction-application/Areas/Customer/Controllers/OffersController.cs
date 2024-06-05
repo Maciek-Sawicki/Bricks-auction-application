@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Offers;
+using Bricks_auction_application.Models.Sets;
 using Bricks_auction_application.Models.System.Repository.IRepository;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
@@ -32,7 +33,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         }
 
         // GET: Offers
-        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, string sortDirection, int? categoryId)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, decimal? minYear, decimal? maxYear, decimal? minPieces, decimal? maxPieces, string sortDirection, int? categoryId)
         {
             // Przypisanie wartości zmiennym ViewData
             ViewData["CurrentSortOrder"] = sortOrder;
@@ -40,6 +41,10 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             ViewData["CurrentSearchString"] = searchString;
             ViewData["CurrentMinPrice"] = minPrice;
             ViewData["CurrentMaxPrice"] = maxPrice;
+            ViewData["CurrentMinYear"] = minYear;
+            ViewData["CurrentMaxYear"] = maxYear;
+            ViewData["CurrentMinPieces"] = minPieces;
+            ViewData["CurrentMaxPieces"] = maxPieces;
             ViewData["CurrentCategoryId"] = categoryId;
 
             // Pobranie wszystkich kategorii
@@ -59,7 +64,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             offers = SortOffers(offers, sortOrder, sortDirection);
 
             // Filtruj oferty
-            offers = FilterOffers(offers, searchString, minPrice, maxPrice);
+            offers = FilterOffers(offers, searchString, minPrice, maxPrice/*, minPieces, maxPieces, minYear, maxYear*/);
 
             // Przekazanie ofert do widoku
             return View(offers.ToList());
@@ -86,7 +91,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             return offers;
         }
 
-        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice)
+        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice/*, decimal? minYear, decimal? maxYear, decimal? minPieces, decimal? maxPieces*/)
         {
 
             if (!string.IsNullOrEmpty(searchString))
@@ -105,6 +110,29 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             {
                 offers = offers.Where(o => o.Price <= maxPrice);
             }
+
+         
+            /*
+            if (minPrice != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.Pieces >= minPieces);
+            }
+
+            if (maxPrice != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.Pieces <= maxPieces);
+            }
+
+            if (minPrice != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.ReleaseYear >= minYear);
+            }
+
+            if (maxPrice != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.ReleaseYear <= maxYear);
+            }
+            */
 
             return offers;
         }
