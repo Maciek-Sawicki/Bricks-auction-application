@@ -33,7 +33,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         }
 
         // GET: Offers
-        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, decimal? minYear, decimal? maxYear, decimal? minPieces, decimal? maxPieces, string sortDirection, int? categoryId)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, decimal? minPrice, decimal? maxPrice, int? minYear, int? maxYear, int? minPieces, int? maxPieces, string sortDirection, int? categoryId)
         {
             // Przypisanie wartości zmiennym ViewData
             ViewData["CurrentSortOrder"] = sortOrder;
@@ -41,15 +41,18 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             ViewData["CurrentSearchString"] = searchString;
             ViewData["CurrentMinPrice"] = minPrice;
             ViewData["CurrentMaxPrice"] = maxPrice;
-            ViewData["CurrentMinYear"] = minYear;
-            ViewData["CurrentMaxYear"] = maxYear;
-            ViewData["CurrentMinPieces"] = minPieces;
-            ViewData["CurrentMaxPieces"] = maxPieces;
+            //ViewData["CurrentMinYear"] = minYear;
+            //ViewData["CurrentMaxYear"] = maxYear;
+            //ViewData["CurrentMinPieces"] = minPieces;
+            //ViewData["CurrentMaxPieces"] = maxPieces;
             ViewData["CurrentCategoryId"] = categoryId;
 
             // Pobranie wszystkich kategorii
             var categories = _unitOfWork.Category.GetAll();
             ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
+
+            //var sets= _unitOfWork.Set.GetAll();
+            //ViewBag.sets = new SelectList(sets, "Id","Pieces", "ReleaseYear");
 
             // Pobranie ofert z repozytorium
             var offers = (await _unitOfWork.Offer.GetAllAsync()).AsQueryable();
@@ -91,7 +94,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             return offers;
         }
 
-        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice/*, decimal? minYear, decimal? maxYear, decimal? minPieces, decimal? maxPieces*/)
+        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice/*, int? minYear, int? maxYear, int? minPieces, int? maxPieces*/)
         {
 
             if (!string.IsNullOrEmpty(searchString))
@@ -112,27 +115,27 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             }
 
          
-            /*
-            if (minPrice != null)
-            {
-                offers = offers.Where(o => o.LEGOSet.Pieces >= minPieces);
-            }
+            
+            //if (minPieces != null)
+            //{
+            //    offers = offers.Where(o => o.LEGOSet.Pieces >= minPieces);
+            //}
 
-            if (maxPrice != null)
-            {
-                offers = offers.Where(o => o.LEGOSet.Pieces <= maxPieces);
-            }
+            //if (maxPieces != null)
+            //{
+            //    offers = offers.Where(o => o.LEGOSet.Pieces <= maxPieces);
+            //}
 
-            if (minPrice != null)
-            {
-                offers = offers.Where(o => o.LEGOSet.ReleaseYear >= minYear);
-            }
+            //if (minYear != null)
+            //{
+            //    offers = offers.Where(o => o.LEGOSet.ReleaseYear >= minYear);
+            //}
 
-            if (maxPrice != null)
-            {
-                offers = offers.Where(o => o.LEGOSet.ReleaseYear <= maxYear);
-            }
-            */
+            //if (maxYear != null)
+            //{
+            //    offers = offers.Where(o => o.LEGOSet.ReleaseYear <= maxYear);
+            //}
+            
 
             return offers;
         }
