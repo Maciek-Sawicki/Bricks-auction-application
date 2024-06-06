@@ -15,6 +15,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Bricks_auction_application.Models.Users;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
@@ -41,18 +42,18 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             ViewData["CurrentSearchString"] = searchString;
             ViewData["CurrentMinPrice"] = minPrice;
             ViewData["CurrentMaxPrice"] = maxPrice;
-            //ViewData["CurrentMinYear"] = minYear;
-            //ViewData["CurrentMaxYear"] = maxYear;
-            //ViewData["CurrentMinPieces"] = minPieces;
-            //ViewData["CurrentMaxPieces"] = maxPieces;
+            ViewData["CurrentMinYear"] = minYear;
+            ViewData["CurrentMaxYear"] = maxYear;
+            ViewData["CurrentMinPieces"] = minPieces;
+            ViewData["CurrentMaxPieces"] = maxPieces;
             ViewData["CurrentCategoryId"] = categoryId;
 
             // Pobranie wszystkich kategorii
             var categories = _unitOfWork.Category.GetAll();
             ViewBag.Categories = new SelectList(categories, "Id", "CategoryName");
 
-            //var sets= _unitOfWork.Set.GetAll();
-            //ViewBag.sets = new SelectList(sets, "Id","Pieces", "ReleaseYear");
+            var sets= _unitOfWork.Set.GetAll();
+            ViewBag.sets = new SelectList(sets, "Id","Pieces", "ReleaseYear");
 
             // Pobranie ofert z repozytorium
             var offers = (await _unitOfWork.Offer.GetAllAsync()).AsQueryable();
@@ -67,7 +68,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             offers = SortOffers(offers, sortOrder, sortDirection);
 
             // Filtruj oferty
-            offers = FilterOffers(offers, searchString, minPrice, maxPrice/*, minPieces, maxPieces, minYear, maxYear*/);
+            offers = FilterOffers(offers, searchString, minPrice, maxPrice, minPieces, maxPieces, minYear, maxYear);
 
             // Przekazanie ofert do widoku
             return View(offers.ToList());
@@ -94,7 +95,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             return offers;
         }
 
-        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice/*, int? minYear, int? maxYear, int? minPieces, int? maxPieces*/)
+        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice, int? minYear, int? maxYear, int? minPieces, int? maxPieces)
         {
 
             if (!string.IsNullOrEmpty(searchString))
@@ -116,25 +117,25 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
          
             
-            //if (minPieces != null)
-            //{
-            //    offers = offers.Where(o => o.LEGOSet.Pieces >= minPieces);
-            //}
+            if (minPieces != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.Pieces >= minPieces);
+            }
 
-            //if (maxPieces != null)
-            //{
-            //    offers = offers.Where(o => o.LEGOSet.Pieces <= maxPieces);
-            //}
+            if (maxPieces != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.Pieces <= maxPieces);
+            }
 
-            //if (minYear != null)
-            //{
-            //    offers = offers.Where(o => o.LEGOSet.ReleaseYear >= minYear);
-            //}
+            if (minYear != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.ReleaseYear >= minYear);
+            }
 
-            //if (maxYear != null)
-            //{
-            //    offers = offers.Where(o => o.LEGOSet.ReleaseYear <= maxYear);
-            //}
+            if (maxYear != null)
+            {
+                offers = offers.Where(o => o.LEGOSet.ReleaseYear <= maxYear);
+            }
             
 
             return offers;
@@ -142,14 +143,10 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
 
         // GET: Offers/Details/5
-        public IActionResult Details(int? id)
+        // GET: Offers/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var offer = _unitOfWork.Offer.GetFirstOrDefault(o => o.OfferId == id, includeProperties: "LEGOSet,User");
+            var offer = await _unitOfWork.Offer.GetFirstOrDefaultAsync(o => o.OfferId == id, includeProperties: "LEGOSet");
             if (offer == null)
             {
                 return NotFound();
@@ -157,6 +154,49 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
             return View(offer);
         }
+
+        // POST: Offers/Details/5
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddToCartDetails(int offerId)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            Cart cartFromDb = _unitOfWork.Cart.GetFirstOrDefault(c => c.UserId == userId);
+            if (cartFromDb != null)
+            {
+                // Użytkownik ma już koszyk, więc dodajemy nową pozycję do istniejącego koszyka
+                CartItem cartItem = new CartItem
+                {
+                    CartId = cartFromDb.CartId,
+                    OfferId = offerId
+                };
+                _unitOfWork.CartItem.Add(cartItem);
+            }
+            else
+            {
+                // Użytkownik nie ma jeszcze koszyka, więc tworzymy nowy koszyk i dodajemy do niego pozycję
+                Cart newCart = new Cart
+                {
+                    UserId = userId,
+                    Items = new List<CartItem>()
+                };
+                CartItem cartItem = new CartItem
+                {
+                    Cart = newCart,
+                    OfferId = offerId
+                };
+                _unitOfWork.Cart.Add(newCart);
+                _unitOfWork.CartItem.Add(cartItem);
+            }
+
+            _unitOfWork.Save();
+            TempData["success"] = "Cart updated successfully";
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Offers/Create
         public IActionResult Create()

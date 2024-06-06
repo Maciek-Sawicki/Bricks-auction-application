@@ -47,11 +47,9 @@
                         <div class="searchbar input-group">
                             <input type="text" class="form-control rounded" placeholder="Szukaj zestawów" name="searchString" value="@ViewData["CurrentFilter"]" />
                             <input type="submit" value="Szukaj" class="btn btn-outline-secondary"  />
-                        </div>
-
-
-                       
+                        </div>                                        
                     </form>
+                    <a class="nav-link text-dark" asp-area="Customer" asp-controller="Carts" asp-action="Index">Koszyka</a>
                     <partial name="_LoginPartial"/>
                 </div>
             </div>

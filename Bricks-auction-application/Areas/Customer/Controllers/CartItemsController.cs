@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,24 +6,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Users;
+using Bricks_auction_application.Models.System.Repository.IRepository;
 
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class CartItemsController : Controller
     {
-        private readonly BricksAuctionDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CartItemsController(BricksAuctionDbContext context)
+        public CartItemsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: CartItems
         public async Task<IActionResult> Index()
         {
-            var bricksAuctionDbContext = _context.CartItems.Include(c => c.Cart).Include(c => c.Offer);
-            return View(await bricksAuctionDbContext.ToListAsync());
+            var cartItems = await _unitOfWork.CartItem.GetAllAsync(includeProperties: "Cart,Offer");
+            return View(cartItems);
         }
 
         // GET: CartItems/Details/5
@@ -35,10 +35,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cartItem = await _context.CartItems
-                .Include(c => c.Cart)
-                .Include(c => c.Offer)
-                .FirstOrDefaultAsync(m => m.CartItemId == id);
+            var cartItem = await _unitOfWork.CartItem.GetAsync(id.Value);
             if (cartItem == null)
             {
                 return NotFound();
@@ -50,26 +47,24 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         // GET: CartItems/Create
         public IActionResult Create()
         {
-            ViewData["CartId"] = new SelectList(_context.Carts, "CartId", "CartId");
-            ViewData["OfferId"] = new SelectList(_context.Offers, "OfferId", "OfferId");
+            ViewData["CartId"] = new SelectList(_unitOfWork.Cart.GetAll(), "CartId", "UserId");
+            ViewData["OfferId"] = new SelectList(_unitOfWork.Offer.GetAll(), "OfferId", "OfferId");
             return View();
         }
 
         // POST: CartItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CartItemId,CartId,OfferId")] CartItem cartItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cartItem);
-                await _context.SaveChangesAsync();
+                _unitOfWork.CartItem.Add(cartItem);
+                await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CartId"] = new SelectList(_context.Carts, "CartId", "CartId", cartItem.CartId);
-            ViewData["OfferId"] = new SelectList(_context.Offers, "OfferId", "OfferId", cartItem.OfferId);
+            ViewData["CartId"] = new SelectList(_unitOfWork.Cart.GetAll(), "CartId", "UserId", cartItem.CartId);
+            ViewData["OfferId"] = new SelectList(_unitOfWork.Offer.GetAll(), "OfferId", "OfferId", cartItem.OfferId);
             return View(cartItem);
         }
 
@@ -81,19 +76,17 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cartItem = await _context.CartItems.FindAsync(id);
+            var cartItem = await _unitOfWork.CartItem.GetAsync(id.Value);
             if (cartItem == null)
             {
                 return NotFound();
             }
-            ViewData["CartId"] = new SelectList(_context.Carts, "CartId", "CartId", cartItem.CartId);
-            ViewData["OfferId"] = new SelectList(_context.Offers, "OfferId", "OfferId", cartItem.OfferId);
+            ViewData["CartId"] = new SelectList(_unitOfWork.Cart.GetAll(), "CartId", "UserId", cartItem.CartId);
+            ViewData["OfferId"] = new SelectList(_unitOfWork.Offer.GetAll(), "OfferId", "OfferId", cartItem.OfferId);
             return View(cartItem);
         }
 
         // POST: CartItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CartItemId,CartId,OfferId")] CartItem cartItem)
@@ -105,14 +98,14 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                /*try
                 {
-                    _context.Update(cartItem);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.CartItem.Update(cartItem);
+                    await _unitOfWork.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CartItemExists(cartItem.CartItemId))
+                    if (!_unitOfWork.CartItem.Exists(cartItem.CartItemId))
                     {
                         return NotFound();
                     }
@@ -120,11 +113,11 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CartId"] = new SelectList(_context.Carts, "CartId", "CartId", cartItem.CartId);
-            ViewData["OfferId"] = new SelectList(_context.Offers, "OfferId", "OfferId", cartItem.OfferId);
+            ViewData["CartId"] = new SelectList(_unitOfWork.Cart.GetAll(), "CartId", "UserId", cartItem.CartId);
+            ViewData["OfferId"] = new SelectList(_unitOfWork.Offer.GetAll(), "OfferId", "OfferId", cartItem.OfferId);
             return View(cartItem);
         }
 
@@ -136,10 +129,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cartItem = await _context.CartItems
-                .Include(c => c.Cart)
-                .Include(c => c.Offer)
-                .FirstOrDefaultAsync(m => m.CartItemId == id);
+            var cartItem = await _unitOfWork.CartItem.GetAsync(id.Value);
             if (cartItem == null)
             {
                 return NotFound();
@@ -153,19 +143,13 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cartItem = await _context.CartItems.FindAsync(id);
+            var cartItem = await _unitOfWork.CartItem.GetAsync(id);
             if (cartItem != null)
             {
-                _context.CartItems.Remove(cartItem);
+                _unitOfWork.CartItem.Remove(cartItem);
+                await _unitOfWork.SaveAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CartItemExists(int id)
-        {
-            return _context.CartItems.Any(e => e.CartItemId == id);
         }
     }
 }

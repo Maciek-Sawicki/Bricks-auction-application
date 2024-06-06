@@ -124,6 +124,25 @@ namespace Bricks_auction_application.Models.System.Respository
         {
             return _db.Offers.Where(o => o.CategoryId == categoryId).ToList();
         }
+        public async Task<Offer> GetFirstOrDefaultAsync(Expression<Func<Offer, bool>> filter = null, string includeProperties = null)
+        {
+            IQueryable<Offer> query = _db.Offers;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
     }
 
 }

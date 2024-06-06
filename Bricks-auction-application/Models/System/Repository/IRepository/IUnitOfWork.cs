@@ -6,6 +6,8 @@
         IOfferRepository Offer { get; }
         ISetRepository Set { get; } // Dodajemy Set do interfejsu
         IUserRepository User { get; }
+        ICartRepository Cart { get; }
+        ICartItemRepository CartItem { get; }
         Task SaveAsync();
         void Save();
     }

@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Users;
+using Bricks_auction_application.Models.System.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class CartsController : Controller
     {
-        private readonly BricksAuctionDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CartsController(BricksAuctionDbContext context)
+        public CartsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: Carts
         public async Task<IActionResult> Index()
         {
-            var bricksAuctionDbContext = _context.Carts.Include(c => c.User);
-            return View(await bricksAuctionDbContext.ToListAsync());
+            var carts = await _unitOfWork.Cart.GetAllAsync();
+            return View(carts);
         }
 
         // GET: Carts/Details/5
@@ -35,9 +33,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cart = await _context.Carts
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.CartId == id);
+            var cart = await _unitOfWork.Cart.GetAsync(id.Value);
             if (cart == null)
             {
                 return NotFound();
@@ -49,24 +45,22 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         // GET: Carts/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+            ViewData["UserId"] = new SelectList(_unitOfWork.User.GetAll(), "UserId", "Email");
             return View();
         }
 
         // POST: Carts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CartId,UserId")] Cart cart)
+        public async Task<IActionResult> Create([Bind("UserId")] Cart cart)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cart);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Cart.Add(cart);
+                await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", cart.UserId);
+            ViewData["UserId"] = new SelectList(_unitOfWork.User.GetAll(), "UserId", "Email", cart.UserId);
             return View(cart);
         }
 
@@ -78,18 +72,16 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cart = await _context.Carts.FindAsync(id);
+            var cart = await _unitOfWork.Cart.GetAsync(id.Value);
             if (cart == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", cart.UserId);
+            ViewData["UserId"] = new SelectList(_unitOfWork.User.GetAll(), "UserId", "Email", cart.UserId);
             return View(cart);
         }
 
         // POST: Carts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CartId,UserId")] Cart cart)
@@ -101,14 +93,14 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                /*try
                 {
-                    _context.Update(cart);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Cart.Update(cart);
+                    await _unitOfWork.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CartExists(cart.CartId))
+                    if (!_unitOfWork.Cart.Exists(cart.CartId))
                     {
                         return NotFound();
                     }
@@ -116,10 +108,10 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", cart.UserId);
+            ViewData["UserId"] = new SelectList(_unitOfWork.User.GetAll(), "UserId", "Email", cart.UserId);
             return View(cart);
         }
 
@@ -131,9 +123,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cart = await _context.Carts
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.CartId == id);
+            var cart = await _unitOfWork.Cart.GetAsync(id.Value);
             if (cart == null)
             {
                 return NotFound();
@@ -147,19 +137,13 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cart = await _context.Carts.FindAsync(id);
+            var cart = await _unitOfWork.Cart.GetAsync(id);
             if (cart != null)
             {
-                _context.Carts.Remove(cart);
+                _unitOfWork.Cart.Remove(cart);
+                await _unitOfWork.SaveAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CartExists(int id)
-        {
-            return _context.Carts.Any(e => e.CartId == id);
         }
     }
 }
