@@ -7,8 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Items;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Bricks_auction_application.Models.Items;
 using Bricks_auction_application.StaticDetails;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
+using System.Globalization;
 
 namespace Bricks_auction_application.Areas.Admin.Controllers
 {
@@ -29,6 +41,57 @@ namespace Bricks_auction_application.Areas.Admin.Controllers
             var bricksAuctionDbContext = _context.Sets.Include(s => s.Category);
             return View(await bricksAuctionDbContext.ToListAsync());
         }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateFromCSV(IFormFile csvFile)
+        //{
+        //    if (csvFile == null || csvFile.Length == 0)
+        //    {
+        //        ModelState.AddModelError("", "File is empty or not selected.");
+        //        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "CategoryName");
+        //        return View("Create");
+        //    }
+
+        //    var sets = new List<Set>();
+
+        //    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        //    {
+        //        HeaderValidated = null, // Ignoruje brakujące nagłówki
+        //        MissingFieldFound = null // Ignoruje brakujące pola
+        //    };
+
+        //    using (var reader = new StreamReader(csvFile.OpenReadStream()))
+        //    using (var csv = new CsvHelper.CsvReader(reader, config))
+        //    {
+        //        try
+        //        {
+        //            sets = csv.GetRecords<Set>().ToList();
+        //        }
+        //        catch (CsvHelperException e)
+        //        {
+        //            ModelState.AddModelError("", "Error reading CSV file: " + e.Message);
+        //            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "CategoryName");
+        //            return View("Create");
+        //        }
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        foreach (var set in sets)
+        //        {
+        //            // Ustawiamy CategoryId na stałą wartość (np. 1)
+        //            set.CategoryId = 1;
+        //            _context.Add(set);
+        //        }
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "CategoryName");
+        //    return View("Create");
+        //}
+
 
         // GET: Admin/Sets/Details/5
         public async Task<IActionResult> Details(int? id)

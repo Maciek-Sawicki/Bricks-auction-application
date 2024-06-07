@@ -64,13 +64,6 @@
         </dl>
         <div class="mt-auto">
             <dl class="row">
-                <form method="post" action="@Url.Action("AddToCartDetails", "Offers", new { offerId = Model.OfferId })">
-                    <button type="submit" class="btn btn-primary">Dodaj do koszyka</button>
-                </form>
-            </dl>
-        </div>
-        <div class="mt-auto">
-            <dl class="row">
                 <dt class="col-6">
                     @Html.DisplayNameFor(model => model.Price)
                 </dt>
@@ -83,6 +76,13 @@
                 <dd class="col-6" style="text-align: right;">
                     @Html.DisplayFor(model => model.OfferEndDateTime)
                 </dd>
+            </dl>
+        </div>
+        <div class="mt-auto">
+            <dl class="row" style="text-align: right;">
+                <form method="post" action="@Url.Action("AddToCartDetails", "Offers", new { offerId = Model.OfferId })">
+                    <button type="submit" class="btn btn-dark">Dodaj do koszyka</button>
+                </form>
             </dl>
         </div>
     </div>

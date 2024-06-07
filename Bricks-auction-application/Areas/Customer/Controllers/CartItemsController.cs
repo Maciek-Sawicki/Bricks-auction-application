@@ -23,7 +23,8 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         // GET: CartItems
         public async Task<IActionResult> Index()
         {
-            var cartItems = await _unitOfWork.CartItem.GetAllAsync(includeProperties: "Cart,Offer");
+            var cartItems = await _unitOfWork.CartItem.GetAllAsync(includeProperties: "Cart,Offer,Offer.LEGOSet");
+
             return View(cartItems);
         }
 

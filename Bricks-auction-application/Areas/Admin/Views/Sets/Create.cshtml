@@ -10,6 +10,15 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+@*         <form asp-action="CreateFromCSV" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="csvFile">Upload CSV File</label>
+                <input type="file" name="csvFile" id="csvFile" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Upload CSV" class="btn btn-primary" />
+            </div>
+        </form> *@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
