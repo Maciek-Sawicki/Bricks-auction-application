@@ -156,6 +156,47 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         }
 
         // POST: Offers/Details/5
+        //[HttpPost]
+        //[Authorize]
+        //public IActionResult AddToCartDetails(int offerId)
+        //{
+        //    var claimsIdentity = (ClaimsIdentity)User.Identity;
+        //    var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+        //    Cart cartFromDb = _unitOfWork.Cart.GetFirstOrDefault(c => c.UserId == userId);
+        //    if (cartFromDb != null)
+        //    {
+        //        // Użytkownik ma już koszyk, więc dodajemy nową pozycję do istniejącego koszyka
+        //        CartItem cartItem = new CartItem
+        //        {
+        //            CartId = cartFromDb.CartId,
+        //            OfferId = offerId
+        //        };
+        //        _unitOfWork.CartItem.Add(cartItem);
+        //    }
+        //    else
+        //    {
+        //        // Użytkownik nie ma jeszcze koszyka, więc tworzymy nowy koszyk i dodajemy do niego pozycję
+        //        Cart newCart = new Cart
+        //        {
+        //            UserId = userId,
+        //            Items = new List<CartItem>()
+        //        };
+        //        CartItem cartItem = new CartItem
+        //        {
+        //            Cart = newCart,
+        //            OfferId = offerId
+        //        };
+        //        _unitOfWork.Cart.Add(newCart);
+        //        _unitOfWork.CartItem.Add(cartItem);
+        //    }
+
+        //    _unitOfWork.Save();
+        //    TempData["success"] = "Cart updated successfully";
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+
         [HttpPost]
         [Authorize]
         public IActionResult AddToCartDetails(int offerId)
@@ -163,30 +204,42 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            Cart cartFromDb = _unitOfWork.Cart.GetFirstOrDefault(c => c.UserId == userId);
+            Cart cartFromDb = _unitOfWork.Cart.GetFirstOrDefault(c => c.UserId == userId, includeProperties: "Items");
             if (cartFromDb != null)
             {
+                // Sprawdź, czy oferta już istnieje w koszyku
+                var existingCartItem = cartFromDb.Items.FirstOrDefault(ci => ci.OfferId == offerId);
+
+                if (existingCartItem != null)
+                {
+                    TempData["success"] = "Ta oferta już znajduje się w Twoim koszyku.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 // Użytkownik ma już koszyk, więc dodajemy nową pozycję do istniejącego koszyka
-                CartItem cartItem = new CartItem
+                var cartItem = new CartItem
                 {
                     CartId = cartFromDb.CartId,
                     OfferId = offerId
                 };
+
                 _unitOfWork.CartItem.Add(cartItem);
             }
             else
             {
                 // Użytkownik nie ma jeszcze koszyka, więc tworzymy nowy koszyk i dodajemy do niego pozycję
-                Cart newCart = new Cart
+                var newCart = new Cart
                 {
                     UserId = userId,
                     Items = new List<CartItem>()
                 };
-                CartItem cartItem = new CartItem
+
+                var cartItem = new CartItem
                 {
                     Cart = newCart,
                     OfferId = offerId
                 };
+
                 _unitOfWork.Cart.Add(newCart);
                 _unitOfWork.CartItem.Add(cartItem);
             }
@@ -196,6 +249,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
 
         // GET: Offers/Create

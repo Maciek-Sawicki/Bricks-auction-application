@@ -14,7 +14,7 @@ namespace Bricks_auction_application.Models.System.Repository.IRepository
         void Remove(Cart cart);
         Task<Cart> GetFirstOrDefaultAsync(Expression<Func<Cart, bool>> filter = null, string includeProperties = null);
         // Add the following method declaration
-        Cart GetFirstOrDefault(Expression<Func<Cart, bool>> filter = null);
+        Cart GetFirstOrDefault(Expression<Func<Cart, bool>> filter = null, string includeProperties = null);
         Task<IEnumerable<Cart>> GetAllAsync(Expression<Func<Cart, bool>> filter = null, Func<IQueryable<Cart>, IOrderedQueryable<Cart>> orderBy = null);
         Task<Cart> GetAsync(int id);
     }
