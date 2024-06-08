@@ -62,5 +62,18 @@ namespace Bricks_auction_application.Models.System.Repository
             return query;
         }
 
+        public async Task<CartItem> GetFirstOrDefaultAsync(Expression<Func<CartItem, bool>> filter, string includeProperties = null)
+        {
+            IQueryable<CartItem> query = _db.CartItems;
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+            return await query.FirstOrDefaultAsync(filter);
+        }
+
     }
 }

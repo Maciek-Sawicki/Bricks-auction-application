@@ -19,9 +19,6 @@ namespace Bricks_auction_application.Models.Users
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
-
-        public string? Email { get; set; }
-
         public string? AccountNumber { get; set; }
         // Relacja z koszykiem użytkownika
         [ValidateNever]

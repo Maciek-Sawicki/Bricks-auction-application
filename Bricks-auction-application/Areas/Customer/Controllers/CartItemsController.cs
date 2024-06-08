@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Users;
 using Bricks_auction_application.Models.System.Repository.IRepository;
+using System.Security.Claims;
 
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
@@ -23,7 +24,20 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         // GET: CartItems
         public async Task<IActionResult> Index()
         {
-            var cartItems = await _unitOfWork.CartItem.GetAllAsync(includeProperties: "Cart,Offer,Offer.LEGOSet");
+            // Get the logged-in user's ID
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            // Retrieve cart items for the current user
+            var cartItems = await _unitOfWork.CartItem.GetAllAsync(
+                filter: ci => ci.Cart.UserId == userId,
+                includeProperties: "Cart,Offer,Offer.LEGOSet,Offer.User"
+            );
 
             return View(cartItems);
         }
@@ -130,7 +144,9 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            var cartItem = await _unitOfWork.CartItem.GetAsync(id.Value);
+            var cartItem = await _unitOfWork.CartItem.GetFirstOrDefaultAsync(
+                ci => ci.CartItemId == id && ci.Cart.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)
+            );
             if (cartItem == null)
             {
                 return NotFound();
@@ -144,7 +160,9 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cartItem = await _unitOfWork.CartItem.GetAsync(id);
+            var cartItem = await _unitOfWork.CartItem.GetFirstOrDefaultAsync(
+                ci => ci.CartItemId == id && ci.Cart.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)
+            );
             if (cartItem != null)
             {
                 _unitOfWork.CartItem.Remove(cartItem);
