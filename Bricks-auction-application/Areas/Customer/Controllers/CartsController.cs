@@ -5,6 +5,7 @@ using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.Users;
 using Bricks_auction_application.Models.System.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
@@ -21,8 +22,22 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         // GET: Carts
         public async Task<IActionResult> Index()
         {
-            var carts = await _unitOfWork.Cart.GetAllAsync();
-            return View(carts);
+            var userId = GetCurrentUserId(); // metoda pomocnicza do uzyskania ID bieżącego użytkownika
+            var cart = await _unitOfWork.Cart.GetCartByUserIdAsync(userId);
+            if (cart == null)
+            {
+                // Jeśli koszyk nie istnieje, tworzymy nowy dla użytkownika
+                cart = new Cart { UserId = userId };
+                _unitOfWork.Cart.Add(cart);
+                await _unitOfWork.SaveAsync();
+            }
+            return View(cart.Items); // Możemy przekazać Items lub cały koszyk w zależności od potrzeb widoku
+        }
+
+        // Metoda pomocnicza do uzyskania ID zalogowanego użytkownika
+        private string GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier); // Uzyskanie ID bieżącego użytkownika
         }
 
         // GET: Carts/Details/5

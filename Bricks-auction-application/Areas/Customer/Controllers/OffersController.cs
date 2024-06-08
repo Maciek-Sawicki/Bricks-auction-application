@@ -197,56 +197,93 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
+        //[HttpPost]
+        //[Authorize]
+        //public IActionResult AddToCartDetails(int offerId)
+        //{
+        //    var claimsIdentity = (ClaimsIdentity)User.Identity;
+        //    var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+        //    Cart cartFromDb = _unitOfWork.Cart.GetFirstOrDefault(c => c.UserId == userId, includeProperties: "Items");
+        //    if (cartFromDb != null)
+        //    {
+        //        // Sprawdź, czy oferta już istnieje w koszyku
+        //        var existingCartItem = cartFromDb.Items.FirstOrDefault(ci => ci.OfferId == offerId);
+
+        //        if (existingCartItem != null)
+        //        {
+        //            TempData["success"] = "Ta oferta już znajduje się w Twoim koszyku.";
+        //            return RedirectToAction(nameof(Index));
+        //        }
+
+        //        // Użytkownik ma już koszyk, więc dodajemy nową pozycję do istniejącego koszyka
+        //        var cartItem = new CartItem
+        //        {
+        //            CartId = cartFromDb.CartId,
+        //            OfferId = offerId
+        //        };
+
+        //        _unitOfWork.CartItem.Add(cartItem);
+        //    }
+        //    else
+        //    {
+        //        // Użytkownik nie ma jeszcze koszyka, więc tworzymy nowy koszyk i dodajemy do niego pozycję
+        //        var newCart = new Cart
+        //        {
+        //            UserId = userId,
+        //            Items = new List<CartItem>()
+        //        };
+
+        //        var cartItem = new CartItem
+        //        {
+        //            Cart = newCart,
+        //            OfferId = offerId
+        //        };
+
+        //        _unitOfWork.Cart.Add(newCart);
+        //        _unitOfWork.CartItem.Add(cartItem);
+        //    }
+
+        //    _unitOfWork.Save();
+        //    TempData["success"] = "Cart updated successfully";
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+
         [HttpPost]
         [Authorize]
-        public IActionResult AddToCartDetails(int offerId)
+        public async Task<IActionResult> AddToCartDetails(int offerId)
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Uzyskanie ID zalogowanego użytkownika
 
-            Cart cartFromDb = _unitOfWork.Cart.GetFirstOrDefault(c => c.UserId == userId, includeProperties: "Items");
-            if (cartFromDb != null)
+            // Pobieramy koszyk użytkownika
+            var cart = await _unitOfWork.Cart.GetCartByUserIdAsync(userId);
+            if (cart == null)
             {
-                // Sprawdź, czy oferta już istnieje w koszyku
-                var existingCartItem = cartFromDb.Items.FirstOrDefault(ci => ci.OfferId == offerId);
-
-                if (existingCartItem != null)
-                {
-                    TempData["success"] = "Ta oferta już znajduje się w Twoim koszyku.";
-                    return RedirectToAction(nameof(Index));
-                }
-
-                // Użytkownik ma już koszyk, więc dodajemy nową pozycję do istniejącego koszyka
-                var cartItem = new CartItem
-                {
-                    CartId = cartFromDb.CartId,
-                    OfferId = offerId
-                };
-
-                _unitOfWork.CartItem.Add(cartItem);
-            }
-            else
-            {
-                // Użytkownik nie ma jeszcze koszyka, więc tworzymy nowy koszyk i dodajemy do niego pozycję
-                var newCart = new Cart
-                {
-                    UserId = userId,
-                    Items = new List<CartItem>()
-                };
-
-                var cartItem = new CartItem
-                {
-                    Cart = newCart,
-                    OfferId = offerId
-                };
-
-                _unitOfWork.Cart.Add(newCart);
-                _unitOfWork.CartItem.Add(cartItem);
+                // Jeśli koszyk nie istnieje, tworzymy nowy dla użytkownika
+                cart = new Cart { UserId = userId };
+                _unitOfWork.Cart.Add(cart);
+                await _unitOfWork.SaveAsync(); // Zapisujemy nowy koszyk, aby uzyskać CartId
             }
 
-            _unitOfWork.Save();
-            TempData["success"] = "Cart updated successfully";
+            // Sprawdź, czy oferta już istnieje w koszyku
+            var existingCartItem = cart.Items.FirstOrDefault(ci => ci.OfferId == offerId);
+            if (existingCartItem != null)
+            {
+                TempData["success"] = "Ta oferta już znajduje się w Twoim koszyku.";
+                return RedirectToAction(nameof(Index));
+            }
 
+            // Dodajemy nową pozycję do koszyka
+            var cartItem = new CartItem
+            {
+                CartId = cart.CartId,
+                OfferId = offerId
+            };
+            _unitOfWork.CartItem.Add(cartItem);
+            await _unitOfWork.SaveAsync();
+
+            TempData["success"] = "Oferta została pomyślnie dodana do koszyka.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -105,5 +105,12 @@ namespace Bricks_auction_application.Models.System.Repository
 
             return query.FirstOrDefault();
         }
+
+        public async Task<Cart> GetCartByUserIdAsync(string UserId)
+        {
+            return await _db.Carts
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.UserId == UserId);
+        }
     }
 }

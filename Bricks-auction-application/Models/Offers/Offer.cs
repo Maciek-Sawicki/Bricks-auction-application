@@ -45,6 +45,10 @@ namespace Bricks_auction_application.Models.Offers
         [Display(Name = "Cena")]
         public decimal Price { get; set; } // Cena oferty
 
+        [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "Cena dostawy")]
+        public decimal ShippingPrice { get; set; } // Cena oferty
+
         //[Required]
         //public int Quantity { get; set; }
 
