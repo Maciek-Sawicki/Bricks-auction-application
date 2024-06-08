@@ -25,7 +25,8 @@ namespace Bricks_auction_application.Models
         public DbSet<OrderedCartItem> OrderedCartItems { get; set; }
         public DbSet<OrderedCart> OrderedCarts { get; set; }
         public DbSet<OrdersHistory> OrdersHistories { get; set; }
-
+        public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

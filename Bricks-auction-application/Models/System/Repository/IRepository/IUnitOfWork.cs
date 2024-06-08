@@ -8,6 +8,8 @@
         IUserRepository User { get; }
         ICartRepository Cart { get; }
         ICartItemRepository CartItem { get; }
+        IOrderHeaderRepository OrderHeader { get; }
+        IOrderDetailsRepository OrderDetails { get; }
         Task SaveAsync();
         void Save();
     }

@@ -4,6 +4,7 @@ using Bricks_auction_application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bricks_auction_application.Migrations
 {
     [DbContext(typeof(BricksAuctionDbContext))]
-    partial class BricksAuctionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240608162636_Add order managment")]
+    partial class Addordermanagment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,30 +115,6 @@ namespace Bricks_auction_application.Migrations
                     b.ToTable("Offers");
                 });
 
-            modelBuilder.Entity("Bricks_auction_application.Models.Offers.OrderDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OfferId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrderHeaderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OfferId");
-
-                    b.HasIndex("OrderHeaderId");
-
-                    b.ToTable("OrderDetails");
-                });
-
             modelBuilder.Entity("Bricks_auction_application.Models.Sets.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -198,52 +177,6 @@ namespace Bricks_auction_application.Migrations
                     b.HasIndex("OfferId");
 
                     b.ToTable("CartItems");
-                });
-
-            modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderHeader", b =>
-                {
-                    b.Property<string>("OrderHeaderId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("OrderTotal")
-                        .HasColumnType("float");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("User")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("OrderHeaderId");
-
-                    b.HasIndex("User");
-
-                    b.ToTable("OrderHeaders");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCart", b =>
@@ -564,25 +497,6 @@ namespace Bricks_auction_application.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bricks_auction_application.Models.Offers.OrderDetails", b =>
-                {
-                    b.HasOne("Bricks_auction_application.Models.Offers.Offer", "offer")
-                        .WithMany()
-                        .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bricks_auction_application.Models.Users.OrderHeader", "OrderHeader")
-                        .WithMany()
-                        .HasForeignKey("OrderHeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderHeader");
-
-                    b.Navigation("offer");
-                });
-
             modelBuilder.Entity("Bricks_auction_application.Models.Users.Cart", b =>
                 {
                     b.HasOne("Bricks_auction_application.Models.Users.User", "User")
@@ -611,17 +525,6 @@ namespace Bricks_auction_application.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Offer");
-                });
-
-            modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderHeader", b =>
-                {
-                    b.HasOne("Bricks_auction_application.Models.Users.User", "user")
-                        .WithMany()
-                        .HasForeignKey("User")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCart", b =>
