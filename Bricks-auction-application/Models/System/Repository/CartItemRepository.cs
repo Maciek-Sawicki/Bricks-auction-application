@@ -76,5 +76,11 @@ namespace Bricks_auction_application.Models.System.Repository
             return await query.FirstOrDefaultAsync(filter);
         }
 
+        public async Task RemoveAllAsync(Expression<Func<CartItem, bool>> filter)
+        {
+            var cartItemsToRemove = await _db.CartItems.Where(filter).ToListAsync();
+
+            _db.CartItems.RemoveRange(cartItemsToRemove);
+        }
     }
 }

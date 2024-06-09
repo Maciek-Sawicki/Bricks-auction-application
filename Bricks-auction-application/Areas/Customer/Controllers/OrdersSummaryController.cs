@@ -14,15 +14,21 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
     {
         private readonly IOrderHeaderRepository _orderHeaderRepository;
         private readonly ICartItemRepository _cartItemRepository;
+        private readonly IEmailSender _emailSender;
 
-        public OrdersSummaryController(IOrderHeaderRepository orderHeaderRepository, ICartItemRepository cartItemRepository)
+        public OrdersSummaryController(IOrderHeaderRepository orderHeaderRepository, ICartItemRepository cartItemRepository, IEmailSender emailSender)
         {
             _orderHeaderRepository = orderHeaderRepository;
             _cartItemRepository = cartItemRepository;
+            _emailSender = emailSender;
         }
+
 
         public async Task<IActionResult> Index()
         {
+            
+
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
@@ -73,5 +79,63 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PlaceOrderAndSendEmail()
+        {
+            // Tutaj dodaj logikę zapisywania zamówienia do bazy danych
+            // np. używając _orderHeaderRepository
+
+            // Następnie skomponuj treść wiadomości e-mail
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cartItems = await _cartItemRepository.GetAllAsync(
+            filter: ci => ci.Cart.UserId == userId,
+            includeProperties: "Offer,Offer.LEGOSet,Offer.User"
+            );
+
+            var allOffers = cartItems.Select(ci => ci.Offer);
+
+            var viewModel = new OrderSummaryViewModel
+            {
+                Offers = allOffers.Distinct(), // Usuń duplikaty ofert
+                // Pozostałe informacje na temat zamówienia
+            };
+
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var subject = "Potwierdzenie zamówienia";
+            var message = "<h2>Twoje zamówienie zostało przyjęte</h2>" +
+              "<p>Oto szczegóły zamówienia:</p>" +
+              "<ul>";
+
+            foreach (var offer in viewModel.Offers)
+            {
+                message += "<li>" +
+                           "<strong>Nazwa:</strong> " + offer.LEGOSet.Name + "<br/>" +
+                           "<strong>Cena:</strong> " + offer.Price.ToString("C") + "<br/>" +
+                           "<strong>Cena z wysyłką:</strong> " + (offer.Price + offer.ShippingPrice).ToString("C") + "<br/>" +
+                           "<strong>Sprzedający:</strong> " + offer.User.Email + "<br/>" +
+                           "<strong>Numer do przelewu:</strong> " + offer.User.AccountNumber + "<br/><br/>" +
+                           "</li>";
+            }
+
+            message += "</ul>";
+
+
+            // Wyślij e-mail
+            await _emailSender.SendEmailAsync(userEmail, subject, message);
+
+            User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _cartItemRepository.RemoveAllAsync(ci => ci.Cart.UserId == userId);
+
+            // Przekieruj użytkownika na inną stronę po złożeniu zamówienia
+            return View("~/Areas/Customer/Views/OrderConfirmation.cshtml");
+        }
+
+
+
     }
+
 }
+

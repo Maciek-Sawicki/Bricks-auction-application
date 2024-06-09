@@ -68,15 +68,20 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6 offset-md-6 text-xl-end">
-        @* Calculate total order value *@
-        @{
-            decimal totalCartValue = Model.Offers.Sum(offer => offer.Price);
-            decimal totalCartValueWithShipping = Model.Offers.Sum(offer => offer.Price + offer.ShippingPrice);
-        }
-        <h4>Całkowita wartość zamówienia: @totalCartValue.ToString("C")</h4>
-        <h4>Całkowita wartość zamówienia z wysyłką: @totalCartValueWithShipping.ToString("C")</h4>
-        <button type="submit" class="btn btn-outline-dark mt-4">Złóż zamówienie</button>
+<form method="post" action="@Url.Action("PlaceOrderAndSendEmail", "OrdersSummary")">
+    <div class="row">
+        <div class="col-md-6 offset-md-6 text-xl-end">
+            @* Calculate total order value *@
+            @{
+                decimal totalCartValue = Model.Offers.Sum(offer => offer.Price);
+                decimal totalCartValueWithShipping = Model.Offers.Sum(offer => offer.Price + offer.ShippingPrice);
+            }
+            <h4>Całkowita wartość zamówienia: @totalCartValue.ToString("C")</h4>
+            <h4>Całkowita wartość zamówienia z wysyłką: @totalCartValueWithShipping.ToString("C")</h4>
+            <button type="submit" class="btn btn-outline-dark mt-4">Złóż zamówienie</button>
+        </div>
     </div>
-</div>
+</form>
+
+
+

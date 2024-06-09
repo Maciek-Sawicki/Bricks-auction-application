@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Bricks_auction_application;
 using Bricks_auction_application.Models;
 using Bricks_auction_application.Models.System.Repository.IRepository;
 using Bricks_auction_application.Models.System.Respository;
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Pobieranie danych konfiguracyjnych z pliku
 var connectionString = builder.Configuration.GetConnectionString("System");
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Dodawanie do zasobów klasy kontekstu dla bazy danych
 builder.Services.AddDbContext<BricksAuctionDbContext>(x => x.UseSqlServer(connectionString));

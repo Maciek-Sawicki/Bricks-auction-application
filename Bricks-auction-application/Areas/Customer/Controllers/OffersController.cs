@@ -95,7 +95,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             return offers;
         }
 
-        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice, int? minYear, int? maxYear, int? minPieces, int? maxPieces)
+        private IQueryable<Offer> FilterOffers(IQueryable<Offer> offers, string searchString, decimal? minPrice, decimal? maxPrice, int? minPieces, int? maxPieces, int? minYear, int? maxYear)
         {
 
             if (!string.IsNullOrEmpty(searchString))

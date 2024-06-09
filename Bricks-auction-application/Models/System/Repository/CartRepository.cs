@@ -94,6 +94,8 @@ namespace Bricks_auction_application.Models.System.Repository
 
             return query;
         }
+
+
         public Cart GetFirstOrDefault(Expression<Func<Cart, bool>> filter)
         {
             IQueryable<Cart> query = _db.Carts;
