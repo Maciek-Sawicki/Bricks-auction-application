@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Bricks_auction_application.Models.Offers.Offer>
+﻿@using System.Security.Claims
+@model IEnumerable<Bricks_auction_application.Models.Offers.Offer>
 
 @{
     ViewData["Title"] = "Offers";
@@ -190,14 +191,22 @@
                     @Html.DisplayFor(modelItem => item.OfferEndDateTime)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.OfferId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.OfferId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.OfferId })
+                    @if (User.Identity.IsAuthenticated && item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        @Html.ActionLink("Edytuj", "Edit", new { id = item.OfferId })                               
+                        <text> | </text>
+                        @Html.ActionLink("Usuń", "Delete", new { id = item.OfferId })
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Zobacz więcej", "Details", new { id = item.OfferId })
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Kod JavaScript dla zmiany trybu wyświetlania -->
 
 <script>
     document.querySelectorAll('input[name="displayMode"]').forEach(function (el) {
