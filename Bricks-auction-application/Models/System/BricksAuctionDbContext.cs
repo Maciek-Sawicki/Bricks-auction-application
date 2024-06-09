@@ -48,7 +48,10 @@ namespace Bricks_auction_application.Models
                .WithMany()
                .HasForeignKey(oc => oc.UserId)
                .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<OrderDetails>()
+              .HasOne(od => od.OrderHeader)
+              .WithMany(od => od.OrderDetails)
+              .HasForeignKey(od => od.OrderHeaderId);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -4,6 +4,7 @@ using Bricks_auction_application.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bricks_auction_application.Migrations
 {
     [DbContext(typeof(BricksAuctionDbContext))]
-    partial class BricksAuctionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240609130705_OrderHeader change")]
+    partial class OrderHeaderchange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +72,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Sets", (string)null);
+                    b.ToTable("Sets");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Offers.Offer", b =>
@@ -109,7 +112,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Offers.OrderDetails", b =>
@@ -133,7 +136,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("OrderHeaderId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Sets.Category", b =>
@@ -154,7 +157,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.Cart", b =>
@@ -174,7 +177,7 @@ namespace Bricks_auction_application.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.CartItem", b =>
@@ -197,7 +200,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderHeader", b =>
@@ -243,7 +246,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OrderHeaders", (string)null);
+                    b.ToTable("OrderHeaders");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCart", b =>
@@ -264,7 +267,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("OrdersHistoryId");
 
-                    b.ToTable("OrderedCarts", (string)null);
+                    b.ToTable("OrderedCarts");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrderedCartItem", b =>
@@ -287,7 +290,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("OrderedOfferId");
 
-                    b.ToTable("OrderedCartItems", (string)null);
+                    b.ToTable("OrderedCartItems");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Users.OrdersHistory", b =>
@@ -306,7 +309,7 @@ namespace Bricks_auction_application.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OrdersHistories", (string)null);
+                    b.ToTable("OrdersHistories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -531,7 +534,7 @@ namespace Bricks_auction_application.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Bricks_auction_application.Models.Items.Set", b =>

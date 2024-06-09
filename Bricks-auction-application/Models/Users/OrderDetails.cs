@@ -10,7 +10,7 @@ namespace Bricks_auction_application.Models.Offers
         public int Id { get; set; }
 
         [Required]
-        public string OrderHeaderId{ get; set; }
+        public string OrderHeaderId { get; set; }
         [ForeignKey("OrderHeaderId")]
         [ValidateNever]
         public OrderHeader OrderHeader { get; set; }
@@ -18,10 +18,6 @@ namespace Bricks_auction_application.Models.Offers
         public int OfferId { get; set; }
         [ForeignKey("OfferId")]
         [ValidateNever]
-
-        public Offer offer { get; set; }
-
-
-
+        public Offer Offer { get; set; } // Dodaj właściwość Offer
     }
 }

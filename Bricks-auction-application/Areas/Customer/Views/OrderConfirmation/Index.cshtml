@@ -1,0 +1,20 @@
+﻿@model Bricks_auction_application.Models.Users.OrderHeader
+
+@{
+    ViewData["Title"] = "Potwierdzenie zamówienia";
+}
+
+<h1>Potwierdzenie zamówienia</h1>
+
+@*<p>Dziękujemy za złożenie zamówienia, @Model.User.Email!</p>*@
+<p>Numer zamówienia: @Model.OrderHeaderId</p>
+<p>Data zamówienia: @Model.OrderDate</p>
+<p>Całkowita wartość zamówienia: @Model.OrderTotal.ToString("C")</p>
+
+<h2>Dane do wysyłki</h2>
+<p>Imię i nazwisko: @Model.Name</p>
+<p>Numer telefonu: @Model.PhoneNumber</p>
+<p>Adres: @Model.StreetAddress</p>
+<p>Miasto: @Model.City</p>
+<p>Kod pocztowy: @Model.PostalCode</p>
+<p>Kraj: @Model.Country</p>

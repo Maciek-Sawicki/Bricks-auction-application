@@ -5,6 +5,7 @@ using Bricks_auction_application.Models.System.Repository.IRepository;
 using Bricks_auction_application.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Bricks_auction_application.Models.System.Repository
 {
     public class CartItemRepository : Repository<CartItem>, ICartItemRepository

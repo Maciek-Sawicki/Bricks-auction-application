@@ -1,0 +1,84 @@
+﻿@model Bricks_auction_application.ViewModels.OrderSummaryViewModel
+
+<h1>Podsumowanie zamówienia</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Cena</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var offer in Model.Offers)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => offer.LEGOSet.Name)</td>
+                <td>@Html.DisplayFor(modelItem => offer.Price)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <h4>Całkowita wartość zamówienia: @Model.TotalCartValue</h4>
+    <h4>Całkowita wartość zamówienia z wysyłką: @Model.TotalCartValueWithShipping</h4>
+    <h2>Obecne oferty w koszyku:</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Cena</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var offer in Model.Offers)
+            {
+                <tr>
+                    <td>
+                        <img src="~/@offer.ImagePath" class="img-fluid" style="max-height: 100px;" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => offer.LEGOSet.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => offer.LEGOSet.SetId)</td>
+                    <td>@Html.DisplayFor(modelItem => offer.Price)</td>
+                    <td>@Html.DisplayFor(modelItem => offer.ShippingPrice)</td>
+                    <td>@Html.DisplayFor(modelItem => offer.OfferEndDateTime)</td>
+                    <td>
+                        @Html.ActionLink("Zobacz aukcję", "Details", "Offers", new { id = offer.OfferId }, null) |
+                        @Html.ActionLink("Usuń", "Delete", new { id = offer.OfferId })
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<h2>Dane do wysyłki</h2>
+<form method="post" action="@Url.Action("ProcessOrder", "OrderSummary")">
+    <div>
+        <label for="PhoneNumber">Numer telefonu:</label>
+        <input type="text" id="PhoneNumber" name="PhoneNumber" required>
+    </div>
+    <div>
+        <label for="StreetAddress">Adres:</label>
+        <input type="text" id="StreetAddress" name="StreetAddress" required>
+    </div>
+    <div>
+        <label for="City">Miasto:</label>
+        <input type="text" id="City" name="City" required>
+    </div>
+    <div>
+        <label for="PostalCode">Kod pocztowy:</label>
+        <input type="text" id="PostalCode" name="PostalCode" required>
+    </div>
+    <div>
+        <label for="Country">Kraj:</label>
+        <input type="text" id="Country" name="Country" required>
+    </div>
+    <div>
+        <label for="Name">Imię i nazwisko:</label>
+        <input type="text" id="Name" name="Name" required>
+    </div>
+    <button type="submit">Złóż zamówienie</button>
+</form>

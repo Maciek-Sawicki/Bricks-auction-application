@@ -55,9 +55,16 @@
                     <td>
                         @Html.ActionLink("Zobacz aukcję", "Details", "Offers", new { id = item.Offer.OfferId }, null) |
                         @Html.ActionLink("Usuń", "Delete", new { id = item.CartItemId })
+
+
                     </td>
                 </tr>
             }
+
+            <div class="text-end mt-4">
+                <a href="@Url.Action("Index", "OrdersSummary", new { area = "Customer" })" class="btn btn-primary">Przejdź do zamówienia</a>
+            </div>
+
         }
     </tbody>
 </table>
