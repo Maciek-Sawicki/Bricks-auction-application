@@ -12,6 +12,7 @@
                 <th>Cena</th>
                 <th>Cena z wysyłką</th>
                 <th>Czas zakończenia</th>
+                <th>Sprzedający</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,7 @@
                     <td>@Html.DisplayFor(modelItem => offer.Price)</td>
                     <td>@Html.DisplayFor(modelItem => offer.ShippingPrice)</td>
                     <td>@Html.DisplayFor(modelItem => offer.OfferEndDateTime)</td>
+                    <td>@Html.DisplayFor(modelItem => offer.User.Email)</td>
                 </tr>
             }
 
@@ -68,8 +70,13 @@
 
 <div class="row">
     <div class="col-md-6 offset-md-6 text-xl-end">
-        <h4>Całkowita wartość zamówienia: @Model.TotalCartValue</h4>
-        <h4>Całkowita wartość zamówienia z wysyłką: @Model.TotalCartValueWithShipping</h4>
+        @* Calculate total order value *@
+        @{
+            decimal totalCartValue = Model.Offers.Sum(offer => offer.Price);
+            decimal totalCartValueWithShipping = Model.Offers.Sum(offer => offer.Price + offer.ShippingPrice);
+        }
+        <h4>Całkowita wartość zamówienia: @totalCartValue.ToString("C")</h4>
+        <h4>Całkowita wartość zamówienia z wysyłką: @totalCartValueWithShipping.ToString("C")</h4>
         <button type="submit" class="btn btn-outline-dark mt-4">Złóż zamówienie</button>
     </div>
 </div>

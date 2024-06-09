@@ -6,16 +6,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Bricks_auction_application.Models;
-using Bricks_auction_application.Models.Users;
-using Bricks_auction_application.Models.System.Repository.IRepository;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
     [Area("Customer")]
@@ -48,7 +38,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             // Pobierz przedmioty w koszyku dla bieżącego użytkownika
             var cartItems = await _cartItemRepository.GetAllAsync(
                 filter: ci => ci.Cart.UserId == userId,
-                includeProperties: "Offer.LEGOSet"
+                includeProperties: "Offer,Offer.LEGOSet,Offer.User"
             );
 
             // Zbierz wszystkie oferty z zamówień oraz przedmiotów w koszyku
@@ -65,5 +55,23 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
             return View(viewModel);
         }
+
+        public IActionResult OrderSummary()
+        {
+            // Retrieve the cart items
+            var cartItems = _cartItemRepository.GetAll(); // Assuming you have a method to retrieve cart items
+
+            // Group cart items by seller's email
+            var groupedCartItems = cartItems.GroupBy(item => item.Offer.User.Email);
+
+            // Create a view model to pass to the view
+            var viewModel = new OrderSummaryViewModel
+            {
+                GroupedCartItems = groupedCartItems
+            };
+
+            return View(viewModel);
+        }
+
     }
 }

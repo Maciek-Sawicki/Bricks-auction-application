@@ -17,5 +17,6 @@ namespace Bricks_auction_application.ViewModels
         public string City { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
+        public IEnumerable<IGrouping<string?, CartItem>> GroupedCartItems { get; internal set; }
     }
 }
