@@ -82,5 +82,9 @@ namespace Bricks_auction_application.Models.System.Repository
 
             _db.CartItems.RemoveRange(cartItemsToRemove);
         }
+        public async Task SaveAsync()
+        {
+            await _db.SaveChangesAsync();
+        }
     }
 }
