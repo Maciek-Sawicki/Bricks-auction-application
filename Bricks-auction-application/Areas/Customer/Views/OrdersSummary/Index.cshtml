@@ -2,33 +2,16 @@
 
 <h1>Podsumowanie zamówienia</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nazwa</th>
-            <th>Cena</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var offer in Model.Offers)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => offer.LEGOSet.Name)</td>
-                <td>@Html.DisplayFor(modelItem => offer.Price)</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
 <div>
-    <h4>Całkowita wartość zamówienia: @Model.TotalCartValue</h4>
-    <h4>Całkowita wartość zamówienia z wysyłką: @Model.TotalCartValueWithShipping</h4>
-    <h2>Obecne oferty w koszyku:</h2>
     <table class="table">
         <thead>
             <tr>
+                <th>Zdjęcie</th>
                 <th>Nazwa</th>
+                <th>Numer katalogowy</th>
                 <th>Cena</th>
+                <th>Cena z wysyłką</th>
+                <th>Czas zakończenia</th>
             </tr>
         </thead>
         <tbody>
@@ -43,10 +26,6 @@
                     <td>@Html.DisplayFor(modelItem => offer.Price)</td>
                     <td>@Html.DisplayFor(modelItem => offer.ShippingPrice)</td>
                     <td>@Html.DisplayFor(modelItem => offer.OfferEndDateTime)</td>
-                    <td>
-                        @Html.ActionLink("Zobacz aukcję", "Details", "Offers", new { id = offer.OfferId }, null) |
-                        @Html.ActionLink("Usuń", "Delete", new { id = offer.OfferId })
-                    </td>
                 </tr>
             }
 
@@ -54,31 +33,43 @@
     </table>
 </div>
 
-<h2>Dane do wysyłki</h2>
-<form method="post" action="@Url.Action("ProcessOrder", "OrderSummary")">
-    <div>
-        <label for="PhoneNumber">Numer telefonu:</label>
-        <input type="text" id="PhoneNumber" name="PhoneNumber" required>
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="mt-5">Dane do wysyłki</h2>
+        <form class="mt-3" method="post" action="@Url.Action("ProcessOrder", "OrderSummary")">
+            <div class="mb-3">
+                <label for="PhoneNumber" class="form-label">Numer telefonu:</label>
+                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" required>
+            </div>
+            <div class="mb-3">
+                <label for="StreetAddress" class="form-label">Adres:</label>
+                <input type="text" class="form-control" id="StreetAddress" name="StreetAddress" required>
+            </div>
+            <div class="mb-3">
+                <label for="City" class="form-label">Miasto:</label>
+                <input type="text" class="form-control" id="City" name="City" required>
+            </div>
+            <div class="mb-3">
+                <label for="PostalCode" class="form-label">Kod pocztowy:</label>
+                <input type="text" class="form-control" id="PostalCode" name="PostalCode" required>
+            </div>
+            <div class="mb-3">
+                <label for="Country" class="form-label">Kraj:</label>
+                <input type="text" class="form-control" id="Country" name="Country" required>
+            </div>
+            <div class="mb-3">
+                <label for="Name" class="form-label">Imię i nazwisko:</label>
+                <input type="text" class="form-control" id="Name" name="Name" required>
+            </div>
+            
+        </form>
     </div>
-    <div>
-        <label for="StreetAddress">Adres:</label>
-        <input type="text" id="StreetAddress" name="StreetAddress" required>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-6 text-xl-end">
+        <h4>Całkowita wartość zamówienia: @Model.TotalCartValue</h4>
+        <h4>Całkowita wartość zamówienia z wysyłką: @Model.TotalCartValueWithShipping</h4>
+        <button type="submit" class="btn btn-outline-dark mt-4">Złóż zamówienie</button>
     </div>
-    <div>
-        <label for="City">Miasto:</label>
-        <input type="text" id="City" name="City" required>
-    </div>
-    <div>
-        <label for="PostalCode">Kod pocztowy:</label>
-        <input type="text" id="PostalCode" name="PostalCode" required>
-    </div>
-    <div>
-        <label for="Country">Kraj:</label>
-        <input type="text" id="Country" name="Country" required>
-    </div>
-    <div>
-        <label for="Name">Imię i nazwisko:</label>
-        <input type="text" id="Name" name="Name" required>
-    </div>
-    <button type="submit">Złóż zamówienie</button>
-</form>
+</div>

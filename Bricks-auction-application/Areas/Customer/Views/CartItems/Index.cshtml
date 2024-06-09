@@ -61,9 +61,7 @@
                 </tr>
             }
 
-            <div class="text-end mt-4">
-                <a href="@Url.Action("Index", "OrdersSummary", new { area = "Customer" })" class="btn btn-primary">Przejdź do zamówienia</a>
-            </div>
+
 
         }
     </tbody>
@@ -72,4 +70,7 @@
 <div class="mt-4 text-end">
     <h4>Całkowita wartość koszyka: @totalCartValue.ToString("C")</h4>
     <h4>Całkowita wartość koszyka z wysyłką: @totalCartValueWithShipping.ToString("C")</h4>
+</div>
+<div class="text-end mt-4">
+    <a href="@Url.Action("Index", "OrdersSummary", new { area = "Customer" })" class="btn btn-outline-dark">Przejdź do zamówienia</a>
 </div>

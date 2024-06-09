@@ -6,6 +6,16 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Bricks_auction_application.Models;
+using Bricks_auction_application.Models.Users;
+using Bricks_auction_application.Models.System.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+
 namespace Bricks_auction_application.Areas.Customer.Controllers
 {
     [Area("Customer")]
@@ -30,20 +40,22 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             }
 
             // Pobierz zamówienia dla bieżącego użytkownika
-            var orders = await _orderHeaderRepository.GetAllAsync(
-                filter: o => o.UserId == userId,
-                includeProperties: "OrderDetails.Offer" // Użyj OrderDetails.Offer zamiast CartItem
-            );
+            //var orders = await _orderHeaderRepository.GetAllAsync(
+            //    filter: o => o.UserId == userId,
+            //    includeProperties: "OrderDetails.Offer, OrderDetails.Offer.UserId" // Użyj OrderDetails.Offer zamiast CartItem
+            //);
 
             // Pobierz przedmioty w koszyku dla bieżącego użytkownika
             var cartItems = await _cartItemRepository.GetAllAsync(
                 filter: ci => ci.Cart.UserId == userId,
-                includeProperties: "Offer"
+                includeProperties: "Offer.LEGOSet"
             );
 
             // Zbierz wszystkie oferty z zamówień oraz przedmiotów w koszyku
-            var allOffers = orders.SelectMany(o => o.OrderDetails.Select(od => od.Offer))
-                                  .Concat(cartItems.Select(ci => ci.Offer));
+            //var allOffers = orders.SelectMany(o => o.OrderDetails.Select(od => od.Offer))
+            //                      .Concat(cartItems.Select(ci => ci.Offer));
+
+            var allOffers = cartItems.Select(ci => ci.Offer);
 
             var viewModel = new OrderSummaryViewModel
             {
