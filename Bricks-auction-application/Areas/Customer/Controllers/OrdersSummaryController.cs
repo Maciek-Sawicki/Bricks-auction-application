@@ -126,7 +126,6 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             // Wyślij e-mail
             await _emailSender.SendEmailAsync(userEmail, subject, message);
 
-            User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _cartItemRepository.RemoveAllAsync(ci => ci.Cart.UserId == userId);
 
             // Przekieruj użytkownika na inną stronę po złożeniu zamówienia
