@@ -6,6 +6,8 @@ using Bricks_auction_application.Models.System.Respository;
 using Bricks_auction_application.Models.System.Repository;
 using Microsoft.AspNetCore.Identity;
 using Bricks_auction_application.Models.Users;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,20 @@ builder.Services.AddScoped<IOrderDetailsRepository, OrderDetailsRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
 var app = builder.Build();
+
+var supportedCultures = new[]
+            {
+                    new CultureInfo("pl-PL")
+            };
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("pl-PL"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -35,28 +35,18 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
                 return Unauthorized();
             }
 
-            // Pobierz zamówienia dla bieżącego użytkownika
-            //var orders = await _orderHeaderRepository.GetAllAsync(
-            //    filter: o => o.UserId == userId,
-            //    includeProperties: "OrderDetails.Offer, OrderDetails.Offer.UserId" // Użyj OrderDetails.Offer zamiast CartItem
-            //);
-
             // Pobierz przedmioty w koszyku dla bieżącego użytkownika
             var cartItems = await _cartItemRepository.GetAllAsync(
                 filter: ci => ci.Cart.UserId == userId,
                 includeProperties: "Offer,Offer.LEGOSet,Offer.User"
             );
 
-            // Zbierz wszystkie oferty z zamówień oraz przedmiotów w koszyku
-            //var allOffers = orders.SelectMany(o => o.OrderDetails.Select(od => od.Offer))
-            //                      .Concat(cartItems.Select(ci => ci.Offer));
 
             var allOffers = cartItems.Select(ci => ci.Offer);
 
             var viewModel = new OrderSummaryViewModel
             {
-                Offers = allOffers.Distinct(), // Usuń duplikaty ofert
-                // Pozostałe informacje na temat zamówienia
+                Offers = allOffers.Distinct(), 
             };
 
             return View(viewModel);
@@ -64,13 +54,10 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
         public IActionResult OrderSummary()
         {
-            // Retrieve the cart items
-            var cartItems = _cartItemRepository.GetAll(); // Assuming you have a method to retrieve cart items
+            var cartItems = _cartItemRepository.GetAll(); 
 
-            // Group cart items by seller's email
             var groupedCartItems = cartItems.GroupBy(item => item.Offer.User.Email);
 
-            // Create a view model to pass to the view
             var viewModel = new OrderSummaryViewModel
             {
                 GroupedCartItems = groupedCartItems
@@ -80,36 +67,45 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrderAndSendEmail()
+        public async Task<IActionResult> PlaceOrderAndSendEmail(OrderSummaryViewModel model)
         {
-            // Tutaj dodaj logikę zapisywania zamówienia do bazy danych
-            // np. używając _orderHeaderRepository
-
-            // Następnie skomponuj treść wiadomości e-mail
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cartItems = await _cartItemRepository.GetAllAsync(
-            filter: ci => ci.Cart.UserId == userId,
-            includeProperties: "Offer,Offer.LEGOSet,Offer.User"
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            // Sprawdzenie poprawności modelu
+            //if (!ModelState.IsValid)
+            //{
+                // Ponownie pobieramy elementy koszyka w przypadku błędów walidacji
+                var cartItems = await _cartItemRepository.GetAllAsync(
+                    filter: ci => ci.Cart.UserId == userId,
+                    includeProperties: "Offer,Offer.LEGOSet,Offer.User"
+                );
+
+                model.Offers = cartItems.Select(ci => ci.Offer).Distinct();
+                model.TotalCartValue = model.Offers.Sum(offer => offer.Price);
+                model.TotalCartValueWithShipping = model.Offers.Sum(offer => offer.Price + offer.ShippingPrice);
+
+                //return View("Index", model);
+            //}
+
+            // Pobierz oferty w koszyku użytkownika
+            var cartItemsDb = await _cartItemRepository.GetAllAsync(
+                filter: ci => ci.Cart.UserId == userId,
+                includeProperties: "Offer,Offer.LEGOSet,Offer.User"
             );
 
-            var allOffers = cartItems.Select(ci => ci.Offer);
-
-            var viewModel = new OrderSummaryViewModel
-            {
-                Offers = allOffers.Distinct(), // Usuń duplikaty ofert
-                // Pozostałe informacje na temat zamówienia
-            };
-
+            var allOffers = cartItemsDb.Select(ci => ci.Offer).Distinct();
 
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             var subject = "Potwierdzenie zamówienia";
             var message = "<h2>Twoje zamówienie zostało przyjęte</h2>" +
-              "<p>Oto szczegóły zamówienia:</p>" +
-              "<ul>";
+                          "<p>Oto szczegóły zamówienia:</p>" +
+                          "<ul>";
 
-            foreach (var offer in viewModel.Offers)
+            foreach (var offer in allOffers)
             {
                 message += "<li>" +
                            "<strong>Nazwa:</strong> " + offer.LEGOSet.Name + "<br/>" +
@@ -122,14 +118,13 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
 
             message += "</ul>";
 
-
             // Wyślij e-mail
             await _emailSender.SendEmailAsync(userEmail, subject, message);
 
+            // Usuń elementy koszyka po złożeniu zamówienia
             await _cartItemRepository.RemoveAllAsync(ci => ci.Cart.UserId == userId);
             await _cartItemRepository.SaveAsync();
 
-            // Przekieruj użytkownika na inną stronę po złożeniu zamówienia
             return View("~/Areas/Customer/Views/OrderConfirmation.cshtml");
         }
 

@@ -1,27 +1,41 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
+using System.Net;
 
 namespace Bricks_auction_application
 {
     public class EmailSender : IEmailSender
     {
-        public Task SendEmailAsync(string email, string subject, string message) 
-        {
-            var mail = "klocxpowiadomienia@outlook.com";
-            var pw = "sGw&)*Q8-DMQ9rk";
+        private readonly SmtpConfiguration _smtpConfiguration;
 
-            var client = new SmtpClient("smtp-mail.outlook.com", 587)
+        public EmailSender(IConfiguration configuration)
+        {
+            _smtpConfiguration = configuration.GetSection("Smtp").Get<SmtpConfiguration>();
+        }
+
+        public async Task SendEmailAsync(string email, string subject, string message, bool isHtml = false)
+        {
+            var client = new SmtpClient(_smtpConfiguration.Server, _smtpConfiguration.Port)
             {
                 EnableSsl = true,
-                Credentials = new NetworkCredential(mail, pw)
+                Credentials = new NetworkCredential(_smtpConfiguration.User, _smtpConfiguration.Password)
             };
 
-            return client.SendMailAsync(
-                new MailMessage(from: mail,
-                                to: email,
-                                subject,
-                                message
-                                ));
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(_smtpConfiguration.User),
+                Subject = subject,
+                Body = message
+            };
+
+            if (isHtml)
+            {
+                mailMessage.IsBodyHtml = true;
+            }
+
+            mailMessage.To.Add(email);
+
+            await client.SendMailAsync(mailMessage);
         }
     }
 }

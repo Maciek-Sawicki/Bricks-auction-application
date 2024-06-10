@@ -30,58 +30,64 @@
                     <td>@Html.DisplayFor(modelItem => offer.User.Email)</td>
                 </tr>
             }
-
         </tbody>
     </table>
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    
         <h2 class="mt-5">Dane do wysyłki</h2>
-        <form class="mt-3" method="post" action="@Url.Action("ProcessOrder", "OrderSummary")">
+
+        @* Formularz do wprowadzania danych wysyłki *@
+        <form class="mt-3" method="post" asp-action="PlaceOrderAndSendEmail">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="mb-3">
-                <label for="PhoneNumber" class="form-label">Numer telefonu:</label>
-                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" required>
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="StreetAddress" class="form-label">Adres:</label>
-                <input type="text" class="form-control" id="StreetAddress" name="StreetAddress" required>
+                <label asp-for="StreetAddress" class="form-label"></label>
+                <input asp-for="StreetAddress" class="form-control" />
+                <span asp-validation-for="StreetAddress" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="City" class="form-label">Miasto:</label>
-                <input type="text" class="form-control" id="City" name="City" required>
+                <label asp-for="City" class="form-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="PostalCode" class="form-label">Kod pocztowy:</label>
-                <input type="text" class="form-control" id="PostalCode" name="PostalCode" required>
+                <label asp-for="PostalCode" class="form-label"></label>
+                <input asp-for="PostalCode" class="form-control" />
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="Country" class="form-label">Kraj:</label>
-                <input type="text" class="form-control" id="Country" name="Country" required>
+                <label asp-for="Country" class="form-label"></label>
+                <input asp-for="Country" class="form-control" />
+                <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label for="Name" class="form-label">Imię i nazwisko:</label>
-                <input type="text" class="form-control" id="Name" name="Name" required>
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            
+
+    </div>
+
+            <div class="row">
+                <div class="col-md-6 offset-md-6 text-xl-end">
+                    @* Wartości zamówienia *@
+                    @{
+                        decimal totalCartValue = Model.Offers.Sum(offer => offer.Price);
+                        decimal totalCartValueWithShipping = Model.Offers.Sum(offer => offer.Price + offer.ShippingPrice);
+                    }
+                    <h4>Całkowita wartość zamówienia: @totalCartValue.ToString("C")</h4>
+                    <h4>Całkowita wartość zamówienia z wysyłką: @totalCartValueWithShipping.ToString("C")</h4>
+                    <button type="submit" class="btn btn-outline-dark mt-4">Złóż zamówienie</button>
+                </div>
+            </div>
         </form>
-    </div>
+    
 </div>
-
-<form method="post" action="@Url.Action("PlaceOrderAndSendEmail", "OrdersSummary")">
-    <div class="row">
-        <div class="col-md-6 offset-md-6 text-xl-end">
-            @* Calculate total order value *@
-            @{
-                decimal totalCartValue = Model.Offers.Sum(offer => offer.Price);
-                decimal totalCartValueWithShipping = Model.Offers.Sum(offer => offer.Price + offer.ShippingPrice);
-            }
-            <h4>Całkowita wartość zamówienia: @totalCartValue.ToString("C")</h4>
-            <h4>Całkowita wartość zamówienia z wysyłką: @totalCartValueWithShipping.ToString("C")</h4>
-            <button type="submit" class="btn btn-outline-dark mt-4">Złóż zamówienie</button>
-        </div>
-    </div>
-</form>
-
-
-
