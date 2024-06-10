@@ -127,6 +127,7 @@ namespace Bricks_auction_application.Areas.Customer.Controllers
             await _emailSender.SendEmailAsync(userEmail, subject, message);
 
             await _cartItemRepository.RemoveAllAsync(ci => ci.Cart.UserId == userId);
+            await _cartItemRepository.SaveAsync();
 
             // Przekieruj użytkownika na inną stronę po złożeniu zamówienia
             return View("~/Areas/Customer/Views/OrderConfirmation.cshtml");
